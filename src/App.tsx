@@ -61,7 +61,7 @@ function World({
     <>
       {EPISODES.slice(0, cubes).map((ep) => (
         <EpisodeCube
-          isSelected={ep === selectedEp}
+          selectedEp={selectedEp}
           onClick={onTitleClick}
           key={ep.title}
           episode={ep}
@@ -87,11 +87,11 @@ export interface Episode {
 function EpisodeCube({
   episode,
   onClick,
-  isSelected,
+  selectedEp,
 }: {
   episode: Episode;
   onClick: (ep: Episode) => void;
-  isSelected: boolean;
+  selectedEp: Episode;
 }) {
   const episodePrefix = String(episode.episode).padStart(3, "0");
   const texture = useTexture(`../public/imgs/${episodePrefix}.jpg`);
@@ -102,7 +102,7 @@ function EpisodeCube({
       <meshBasicMaterial
         transparent
         map={texture}
-        opacity={isSelected ? 1 : 0.2}
+        opacity={episode === selectedEp || !selectedEp ? 1 : 0.2}
       />
     </mesh>
   );
