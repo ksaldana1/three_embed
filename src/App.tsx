@@ -79,7 +79,9 @@ function World({
         return (
           <Line
             points={[
+              // @ts-ignore
               currentPosition.map((x) => x * SCALING),
+              // @ts-ignore
               n.map((x) => x * SCALING),
             ]} // Array of points to create the line
             color="black" // Line color
@@ -141,7 +143,7 @@ function EpisodeCube({
   );
 }
 
-function Sidebar({
+export function Sidebar({
   episode,
   onClick,
 }: {
