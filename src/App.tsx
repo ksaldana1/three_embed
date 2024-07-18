@@ -23,12 +23,12 @@ function App() {
         overflow: "hidden",
       }}
     >
-      <Sidebar
-        onClick={() => {
-          if (selected) setSelected(null);
-        }}
-        episode={selected}
-      />
+      {/* <Sidebar */}
+      {/*   onClick={() => { */}
+      {/*     if (selected) setSelected(null); */}
+      {/*   }} */}
+      {/*   episode={selected} */}
+      {/* /> */}
       <div style={{ flex: 1 }}>
         <Canvas style={{ width: "100%", height: "100%" }}>
           <Stage>
@@ -91,7 +91,7 @@ function EpisodeCube({
 }: {
   episode: Episode;
   onClick: (ep: Episode) => void;
-  selectedEp: Episode;
+  selectedEp: Episode | null;
 }) {
   const episodePrefix = String(episode.episode).padStart(3, "0");
   const texture = useTexture(`../public/imgs/${episodePrefix}.jpg`);
