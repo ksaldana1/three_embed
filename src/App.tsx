@@ -5,11 +5,11 @@ import {
   Stage,
   useTexture,
 } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
 import { useState } from "react";
 import { animated, useSpring } from "react-spring";
-import EPISODES from "../public/episodes.json";
+import EPISODES from "../public/episodes_en.json";
 import "./App.css";
 
 function App() {
@@ -80,6 +80,7 @@ export interface Episode {
   speakers: string;
   details: string;
   cover_img_url: string;
+  neighbors: number[];
   hash: string;
   umap: number[];
 }
@@ -102,7 +103,13 @@ function EpisodeCube({
       <meshBasicMaterial
         transparent
         map={texture}
-        opacity={episode === selectedEp || !selectedEp ? 1 : 0.2}
+        opacity={
+          episode === selectedEp ||
+          !selectedEp ||
+          selectedEp.neighbors.includes(episode.episode)
+            ? 1
+            : 0.2
+        }
       />
     </mesh>
   );
