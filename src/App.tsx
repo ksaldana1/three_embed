@@ -24,12 +24,6 @@ function App() {
         overflow: "hidden",
       }}
     >
-      {/* <Sidebar */}
-      {/*   onClick={() => { */}
-      {/*     if (selected) setSelected(null); */}
-      {/*   }} */}
-      {/*   episode={selected} */}
-      {/* /> */}
       <div style={{ flex: 1 }}>
         <Canvas style={{ width: "100%", height: "100%" }}>
           <Stage>
@@ -75,9 +69,10 @@ function World({
           episode={ep}
         />
       ))}
-      {neighbors?.map((n) => {
+      {neighbors?.map((n, k) => {
         return (
           <Line
+            key={k}
             points={[
               // @ts-ignore
               currentPosition.map((x) => x * SCALING),
@@ -88,7 +83,7 @@ function World({
             lineWidth={1} // Line width
           />
         );
-      })}{" "}
+      })}
     </>
   );
 }
@@ -117,7 +112,7 @@ function EpisodeCube({
   selectedEp: Episode | null;
 }) {
   const episodePrefix = String(episode.episode).padStart(3, "0");
-  const texture = useTexture(`../public/imgs/${episodePrefix}.jpg`);
+  const texture = useTexture(`../imgs/${episodePrefix}.jpg`);
   const [x, y, z] = episode.umap;
   const ref = useRef<Mesh>(null!);
 
