@@ -1,11 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import {
-  FontData,
-  OrbitControls,
-  Stage,
-  Text3D,
-  useFont,
-} from "@react-three/drei";
+import { FontData, Stage, Text3D, CameraControls } from "@react-three/drei";
 import "./App.css";
 import font from "../public/Roboto_regular.json";
 import EPISODES from "../public/episodes.json";
@@ -15,8 +9,8 @@ function App() {
   return (
     <div style={{ height: "100%" }}>
       <Canvas style={{ height: "100%" }}>
-        <OrbitControls />
         <Stage>
+          <CameraControls />
           <World />
         </Stage>
       </Canvas>
@@ -27,7 +21,7 @@ function App() {
 function World() {
   return (
     <>
-      {EPISODES.slice(0, 1).map((ep) => (
+      {EPISODES.slice(0, 10).map((ep) => (
         <EpisodeCube key={ep.title} episode={ep} />
       ))}
     </>
@@ -50,7 +44,7 @@ export interface Episode {
 function EpisodeCube({ episode }: { episode: Episode }) {
   const [x, y, z] = episode.umap;
   return (
-    <Text3D font={font as FontData} position={[x, y, z]}>
+    <Text3D font={font as FontData} position={[x * 50, y * 50, z * 50]}>
       <meshBasicMaterial color="gray" />
       {episode.title}
     </Text3D>
