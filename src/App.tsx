@@ -4,11 +4,12 @@ import {
   OrbitControls,
   Stage,
   useTexture,
+  Line,
 } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
-import { useControls } from "leva";
-import { useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { useMemo, useRef, useState } from "react";
 import { animated, useSpring } from "react-spring";
+import type { Mesh } from "three";
 import EPISODES from "../public/episodes_en.json";
 import "./App.css";
 
@@ -47,6 +48,8 @@ function App() {
   );
 }
 
+export const SCALING = 50;
+
 function World({
   onTitleClick,
   selectedEp,
@@ -54,12 +57,17 @@ function World({
   onTitleClick: (ep: Episode) => void;
   selectedEp: Episode | null;
 }) {
-  const { cubes } = useControls({
-    cubes: 100,
-  });
+  const [currentPosition, neighbors] = useMemo(() => {
+    const currentPosition = selectedEp?.umap ?? [];
+    const neighbors =
+      selectedEp?.neighbors
+        ?.map((id) => EPISODES.find((ep) => ep.episode === id))
+        .map((ep) => [ep?.umap[0], ep?.umap[1], ep?.umap[2]]) ?? [];
+    return [currentPosition, neighbors];
+  }, [selectedEp]);
   return (
     <>
-      {EPISODES.slice(0, cubes).map((ep) => (
+      {EPISODES.slice().map((ep) => (
         <EpisodeCube
           selectedEp={selectedEp}
           onClick={onTitleClick}
@@ -67,6 +75,18 @@ function World({
           episode={ep}
         />
       ))}
+      {neighbors?.map((n) => {
+        return (
+          <Line
+            points={[
+              currentPosition.map((x) => x * SCALING),
+              n.map((x) => x * SCALING),
+            ]} // Array of points to create the line
+            color="black" // Line color
+            lineWidth={1} // Line width
+          />
+        );
+      })}{" "}
     </>
   );
 }
@@ -97,8 +117,14 @@ function EpisodeCube({
   const episodePrefix = String(episode.episode).padStart(3, "0");
   const texture = useTexture(`../public/imgs/${episodePrefix}.jpg`);
   const [x, y, z] = episode.umap;
+  const ref = useRef<Mesh>(null!);
+
   return (
-    <mesh onClick={() => onClick(episode)} position={[x * 50, y * 50, z * 50]}>
+    <mesh
+      ref={ref}
+      onClick={() => onClick(episode)}
+      position={[x * 50, y * 50, z * 50]}
+    >
       <boxGeometry args={[10, 10, 1]} />
       <meshBasicMaterial
         transparent
