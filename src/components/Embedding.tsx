@@ -2,6 +2,7 @@ import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
 import { Embedding, SCALING_FACTOR } from "../common/types";
+import { useSpring, animated } from "@react-spring/three";
 
 interface EmbeddingProps {
   embedding: Embedding;
@@ -27,6 +28,13 @@ export function Embed({
     ] as const;
   }, [embedding.umap]);
 
+  const fade =
+    selectedEmbedding &&
+    embedding.id !== selectedEmbedding?.id &&
+    !selectedEmbedding?.neighbors.includes(embedding.id);
+
+  const { opacity } = useSpring({ opacity: fade ? 0.2 : 1 });
+
   return (
     <mesh
       ref={ref}
@@ -37,17 +45,7 @@ export function Embed({
       position={position}
     >
       <boxGeometry args={[10, 10, 1]} />
-      <meshBasicMaterial
-        transparent
-        map={texture}
-        opacity={
-          embedding === selectedEmbedding ||
-          !selectedEmbedding ||
-          selectedEmbedding.neighbors.includes(embedding.id)
-            ? 1
-            : 0.2
-        }
-      />
+      <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />
     </mesh>
   );
 }
