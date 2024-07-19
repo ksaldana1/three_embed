@@ -32,11 +32,16 @@ export function World() {
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
   }, [selected, scale]);
 
-  const b = useMemo(() => {
+  const paths = useMemo(() => {
     if (!selected || !secondSelection) return [];
-    return dijkstra(EMBEDDINGS, selected?.id, secondSelection?.id);
-  }, [selected, secondSelection]);
-  console.log(b);
+    const paths = dijkstra(EMBEDDINGS, selected?.id, secondSelection?.id);
+    return (
+      paths?.path.map((path) => [
+        path.from.umap.map((x) => x * scale),
+        path.to.umap.map((x) => x * scale),
+      ]) ?? []
+    );
+  }, [selected, secondSelection, scale]);
 
   return (
     <group>
@@ -72,16 +77,11 @@ export function World() {
           );
         })}
 
-      {mode === MODE.PATH_EXPLORER && secondSelection && (
-        <Line
-          color="black"
-          lineWidth={1}
-          points={[
-            currentPosition,
-            secondSelection?.umap.map((x) => x * scale) as UMAP,
-          ]}
-        />
-      )}
+      {mode === MODE.PATH_EXPLORER &&
+        secondSelection &&
+        paths.map((path) => {
+          return <Line color="black" lineWidth={1} points={path} />;
+        })}
     </group>
   );
 }
