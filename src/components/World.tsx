@@ -32,16 +32,19 @@ export function World() {
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
   }, [selected, scale]);
 
-  const paths = useMemo(() => {
-    if (!selected || !secondSelection) return [];
+  const { points, paths } = useMemo(() => {
+    if (!selected || !secondSelection) return { points: [], paths: [] };
     const paths = dijkstra(EMBEDDINGS, selected?.id, secondSelection?.id);
-    return (
-      paths?.path.map((path) => [
-        path.from.umap.map((x) => x * scale),
-        path.to.umap.map((x) => x * scale),
-      ]) ?? []
-    );
+    return {
+      points:
+        paths?.path.map((path) => [
+          path.from.umap.map((x) => x * scale),
+          path.to.umap.map((x) => x * scale),
+        ]) ?? [],
+      paths: paths?.path,
+    };
   }, [selected, secondSelection, scale]);
+  console.log(paths);
 
   return (
     <group>
@@ -57,7 +60,11 @@ export function World() {
             mode === MODE.PATH_EXPLORER &&
             selected &&
             embedding.id !== selected.id &&
-            embedding.id !== secondSelection?.id
+            embedding.id !== secondSelection?.id &&
+            !paths?.find(
+              (path) =>
+                path?.from.id === embedding.id || path?.to.id === embedding.id
+            )
           );
 
         return (
@@ -93,9 +100,11 @@ export function World() {
 
       {mode === MODE.PATH_EXPLORER &&
         secondSelection &&
-        paths.map((path) => {
+        points.map((point, index) => {
           // @ts-expect-error typing vector3s is annoying
-          return <Line color="black" lineWidth={1} points={path} />;
+          return (
+            <Line key={index} color="black" lineWidth={1} points={point} />
+          );
         })}
     </group>
   );

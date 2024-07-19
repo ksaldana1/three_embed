@@ -4,7 +4,7 @@ import { Scene } from "./components/Scene";
 function App() {
   return (
     <div className="flex h-full w-full overflow-hidden">
-      <div style={{ flex: 1 }}>
+      <div className="flex w-full h-full">
         <Canvas className="w-full h-full">
           <Scene />
         </Canvas>
