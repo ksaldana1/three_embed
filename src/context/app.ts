@@ -1,6 +1,6 @@
 import { createContext, Reducer, useContext } from "react";
 import { Embedding, MODE } from "../common/types";
-import { match } from "ts-pattern";
+import { match, P } from "ts-pattern";
 
 export type AppState =
   | { mode: MODE.NEAREST_NEIGHBORS; selected: Embedding | null }
@@ -10,10 +10,12 @@ export type AppState =
       targetSelection: Embedding | null;
     };
 
-export type AppEvents = {
-  type: "USER_CLICK_EMBEDDING";
-  payload: { embedding: Embedding | null };
-};
+export type AppEvents =
+  | {
+      type: "USER_CLICK_EMBEDDING";
+      payload: { embedding: Embedding | null };
+    }
+  | { type: "SElECT_MODE"; payload: { mode: MODE } };
 
 export type AppContext = {
   state: AppState;
@@ -55,13 +57,20 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
           selected:
             state.selected && state.selected === event.payload.embedding
               ? null
-              : event.payload.embedding,
+              : state.selected || event.payload.embedding,
           targetSelection:
             state.selected && state.selected !== event.payload.embedding
               ? event.payload.embedding
               : null,
-        } as AppState;
+        };
       }
     )
+    .with([P.any, { type: "SElECT_MODE" }], ([state, event]) => {
+      return {
+        ...state,
+        mode: event.payload.mode,
+        targetSelection: null,
+      };
+    })
     .run();
 };
