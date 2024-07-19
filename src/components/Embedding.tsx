@@ -8,6 +8,8 @@ interface EmbeddingProps {
   embedding: Embedding;
   onClick: (embedding: Embedding | null) => void;
   selectedEmbedding: Embedding | null;
+  // this sucks
+  secondSelection?: Embedding | null;
   scale?: number;
   mode: MODE;
 }
@@ -16,6 +18,7 @@ export function Embed({
   embedding,
   onClick,
   selectedEmbedding,
+  secondSelection,
   scale,
   mode,
 }: EmbeddingProps) {
@@ -34,9 +37,14 @@ export function Embed({
   }, [embedding.umap, scaleOrDefault]);
 
   const fade =
-    selectedEmbedding &&
-    embedding.id !== selectedEmbedding?.id &&
-    !selectedEmbedding?.neighbors.includes(embedding.id);
+    (mode === MODE.NEAREST_NEIGHBORS &&
+      selectedEmbedding &&
+      embedding.id !== selectedEmbedding?.id &&
+      !selectedEmbedding?.neighbors.includes(embedding.id)) ||
+    (mode === MODE.PATH_EXPLORER &&
+      selectedEmbedding &&
+      embedding.id !== selectedEmbedding.id &&
+      embedding.id !== secondSelection?.id);
 
   const { opacity } = useSpring({ opacity: fade ? 0.2 : 1 });
 

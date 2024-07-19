@@ -18,7 +18,7 @@ export function World() {
       step: 1,
     },
     mode: {
-      value: MODE.PATH_EXPLORER,
+      value: MODE.NEAREST_NEIGHBORS,
       min: 0,
       step: 1,
     },
@@ -44,9 +44,13 @@ export function World() {
         <Embed
           mode={mode}
           embedding={embedding}
+          secondSelection={secondSelection}
           selectedEmbedding={selected}
           onClick={(embedding: Embedding | null) => {
-            if (selected && mode === MODE.PATH_EXPLORER) {
+            if (selected === embedding) {
+              setSelected(null);
+              setSecondSelection(null);
+            } else if (selected && mode === MODE.PATH_EXPLORER) {
               setSecondSelection(embedding);
             } else {
               setSelected(embedding);
