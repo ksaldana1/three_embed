@@ -1,10 +1,8 @@
 import { Line } from "@react-three/drei";
 import { useMemo } from "react";
-import { Embedding } from "../common/types";
+import { Embedding, SCALING_FACTOR, UMAP } from "../common/types";
 import { EMBEDDINGS } from "../common/data";
 import { Embed } from "./Embedding";
-
-export const SCALING = 50;
 
 interface WorldProps {
   selected: Embedding | null;
@@ -12,15 +10,12 @@ interface WorldProps {
 }
 
 export function World({ selected, onClick }: WorldProps) {
-  const [currentPosition, neighbors] = useMemo(() => {
-    const currentPosition = selected?.umap ?? [];
+  const [currentPosition, neighborPositions] = useMemo(() => {
+    const currentPosition = selected?.umap.map((x) => x * SCALING_FACTOR) ?? [];
     const neighbors = selected?.neighbors
       ?.map((id) => EMBEDDINGS.find((embedding) => embedding.id === id))
-      .map((embedding) => embedding?.umap.map((v) => v * SCALING) ?? []);
-    return [
-      currentPosition.map((x) => x * SCALING) as [number, number, number],
-      neighbors as Array<[number, number, number]>,
-    ];
+      .map((embedding) => embedding?.umap.map((v) => v * SCALING_FACTOR) ?? []);
+    return [currentPosition as UMAP, neighbors as Array<UMAP>];
   }, [selected]);
 
   return (
@@ -33,10 +28,11 @@ export function World({ selected, onClick }: WorldProps) {
           key={embedding.id}
         />
       ))}
-      {neighbors?.map((neighbor) => {
+      {neighborPositions?.map((neighborPosition, index) => {
         return (
           <Line
-            points={[currentPosition, neighbor]}
+            key={`${selected?.id}-${index}`}
+            points={[currentPosition, neighborPosition]}
             color="black"
             lineWidth={1}
           />

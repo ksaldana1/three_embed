@@ -26,3 +26,5 @@ export interface Episode extends Embedding {
   cover_img_url: string;
   hash: string;
 }
+
+export const SCALING_FACTOR = 50;

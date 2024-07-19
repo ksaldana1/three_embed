@@ -1,9 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
-import { Embedding } from "../common/types";
-
-export const SCALING = 50;
+import { Embedding, SCALING_FACTOR } from "../common/types";
 
 interface EmbeddingProps {
   embedding: Embedding;
@@ -22,7 +20,11 @@ export function Embed({
 
   const position = useMemo(() => {
     const [x, y, z] = embedding.umap;
-    return [x * SCALING, y * SCALING, z * SCALING] as const;
+    return [
+      x * SCALING_FACTOR,
+      y * SCALING_FACTOR,
+      z * SCALING_FACTOR,
+    ] as const;
   }, [embedding.umap]);
 
   return (
