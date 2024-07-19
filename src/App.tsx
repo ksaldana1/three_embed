@@ -31,7 +31,7 @@ function Sidebar() {
     <animated.div
       style={{ height }}
       className={clsx(
-        "absolute w-96  bg-blue-100 opacity-75 left-12 rounded-md"
+        "absolute w-96 bg-blue-100 opacity-75 left-12 rounded-md"
       )}
     >
       {isOpen && state.selected ? <Content embedding={state.selected} /> : null}
