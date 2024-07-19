@@ -80,6 +80,7 @@ export function World() {
       {mode === MODE.PATH_EXPLORER &&
         secondSelection &&
         paths.map((path) => {
+          // @ts-expect-error typing vector3s is annoying
           return <Line color="black" lineWidth={1} points={path} />;
         })}
     </group>
