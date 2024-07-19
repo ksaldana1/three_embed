@@ -45,26 +45,40 @@ export function World() {
 
   return (
     <group>
-      {EMBEDDINGS.map((embedding) => (
-        <Embed
-          mode={mode}
-          embedding={embedding}
-          secondSelection={secondSelection}
-          selectedEmbedding={selected}
-          onClick={(embedding: Embedding | null) => {
-            if (selected === embedding) {
-              setSelected(null);
-              setSecondSelection(null);
-            } else if (selected && mode === MODE.PATH_EXPLORER) {
-              setSecondSelection(embedding);
-            } else {
-              setSelected(embedding);
-            }
-          }}
-          key={embedding.id}
-          scale={scale}
-        />
-      ))}
+      {EMBEDDINGS.map((embedding) => {
+        const fade =
+          !!(
+            mode === MODE.NEAREST_NEIGHBORS &&
+            selected &&
+            embedding.id !== selected?.id &&
+            !selected?.neighbors.includes(embedding.id)
+          ) ||
+          !!(
+            mode === MODE.PATH_EXPLORER &&
+            selected &&
+            embedding.id !== selected.id &&
+            embedding.id !== secondSelection?.id
+          );
+
+        return (
+          <Embed
+            embedding={embedding}
+            onClick={(embedding: Embedding | null) => {
+              if (selected === embedding) {
+                setSelected(null);
+                setSecondSelection(null);
+              } else if (selected && mode === MODE.PATH_EXPLORER) {
+                setSecondSelection(embedding);
+              } else {
+                setSelected(embedding);
+              }
+            }}
+            key={embedding.id}
+            scale={scale}
+            fade={fade}
+          />
+        );
+      })}
       {mode === MODE.NEAREST_NEIGHBORS &&
         neighborPositions?.map((neighborPosition, index) => {
           return (
