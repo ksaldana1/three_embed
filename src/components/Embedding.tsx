@@ -1,32 +1,37 @@
+import { animated, useSpring } from "@react-spring/three";
 import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
-import { Embedding, SCALING_FACTOR } from "../common/types";
-import { useSpring, animated } from "@react-spring/three";
+import { Embedding, MODE, SCALING_FACTOR } from "../common/types";
 
 interface EmbeddingProps {
   embedding: Embedding;
   onClick: (embedding: Embedding | null) => void;
   selectedEmbedding: Embedding | null;
+  scale?: number;
+  mode: MODE;
 }
 
 export function Embed({
   embedding,
   onClick,
   selectedEmbedding,
+  scale,
+  mode,
 }: EmbeddingProps) {
   const imageName = embedding.id.padStart(3, "0");
   const texture = useTexture(`../imgs/${imageName}.jpg`);
   const ref = useRef<Mesh>(null!);
+  const scaleOrDefault = scale ?? SCALING_FACTOR;
 
   const position = useMemo(() => {
     const [x, y, z] = embedding.umap;
     return [
-      x * SCALING_FACTOR,
-      y * SCALING_FACTOR,
-      z * SCALING_FACTOR,
+      x * scaleOrDefault,
+      y * scaleOrDefault,
+      z * scaleOrDefault,
     ] as const;
-  }, [embedding.umap]);
+  }, [embedding.umap, scaleOrDefault]);
 
   const fade =
     selectedEmbedding &&
@@ -38,10 +43,11 @@ export function Embed({
   return (
     <mesh
       ref={ref}
-      onPointerEnter={() => {
-        onClick(embedding);
+      onClick={() => {
+        mode === MODE.NEAREST_NEIGHBORS && selectedEmbedding === embedding
+          ? onClick(null)
+          : onClick(embedding);
       }}
-      onPointerOut={() => onClick(null)}
       position={position}
     >
       <boxGeometry args={[10, 10, 1]} />

@@ -1,43 +1,83 @@
 import { Line } from "@react-three/drei";
-import { useMemo } from "react";
-import { Embedding, SCALING_FACTOR, UMAP } from "../common/types";
+import { useControls } from "leva";
+import { useMemo, useState } from "react";
 import { EMBEDDINGS } from "../common/data";
+import { Embedding, MODE, SCALING_FACTOR, UMAP } from "../common/types";
 import { Embed } from "./Embedding";
+import { dijkstra } from "../common/utils";
 
-interface WorldProps {
-  selected: Embedding | null;
-  onClick: (embedding: Embedding | null) => void;
-}
+export function World() {
+  const [selected, setSelected] = useState<Embedding | null>(null);
+  const [secondSelection, setSecondSelection] = useState<Embedding | null>(
+    null
+  );
+  const { scale, mode } = useControls({
+    scale: {
+      value: SCALING_FACTOR,
+      min: 0,
+      step: 1,
+    },
+    mode: {
+      value: MODE.PATH_EXPLORER,
+      min: 0,
+      step: 1,
+    },
+  });
 
-export function World({ selected, onClick }: WorldProps) {
   const [currentPosition, neighborPositions] = useMemo(() => {
-    const currentPosition = selected?.umap.map((x) => x * SCALING_FACTOR) ?? [];
+    const currentPosition = selected?.umap.map((x) => x * scale) ?? [];
     const neighbors = selected?.neighbors
       ?.map((id) => EMBEDDINGS.find((embedding) => embedding.id === id))
-      .map((embedding) => embedding?.umap.map((v) => v * SCALING_FACTOR) ?? []);
+      .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [selected]);
+  }, [selected, scale]);
+
+  const b = useMemo(() => {
+    if (!selected || !secondSelection) return [];
+    return dijkstra(EMBEDDINGS, selected?.id, secondSelection?.id);
+  }, [selected, secondSelection]);
+  console.log(b);
 
   return (
     <group>
       {EMBEDDINGS.map((embedding) => (
         <Embed
+          mode={mode}
           embedding={embedding}
           selectedEmbedding={selected}
-          onClick={onClick}
+          onClick={(embedding: Embedding | null) => {
+            if (selected && mode === MODE.PATH_EXPLORER) {
+              setSecondSelection(embedding);
+            } else {
+              setSelected(embedding);
+            }
+          }}
           key={embedding.id}
+          scale={scale}
         />
       ))}
-      {neighborPositions?.map((neighborPosition, index) => {
-        return (
-          <Line
-            key={`${selected?.id}-${index}`}
-            points={[currentPosition, neighborPosition]}
-            color="black"
-            lineWidth={1}
-          />
-        );
-      })}
+      {mode === MODE.NEAREST_NEIGHBORS &&
+        neighborPositions?.map((neighborPosition, index) => {
+          return (
+            <Line
+              key={`${selected?.id}-${index}`}
+              points={[currentPosition, neighborPosition]}
+              color="black"
+              lineWidth={1}
+            />
+          );
+        })}
+
+      {mode === MODE.PATH_EXPLORER && secondSelection && (
+        <Line
+          color="black"
+          lineWidth={1}
+          points={[
+            currentPosition,
+            secondSelection?.umap.map((x) => x * scale) as UMAP,
+          ]}
+        />
+      )}
     </group>
   );
 }
