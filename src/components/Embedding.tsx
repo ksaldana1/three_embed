@@ -13,7 +13,7 @@ interface EmbeddingProps {
 
 export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   const imageName = embedding.id.padStart(3, "0");
-  const texture = useTexture(`../imgs/${imageName}.jpg`);
+  const texture = useTexture(`../../imgs/${imageName}.jpg`);
   const ref = useRef<Mesh>(null!);
   const scaleOrDefault = scale ?? SCALING_FACTOR;
 
