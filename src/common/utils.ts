@@ -105,31 +105,3 @@ export function dijkstra(
 
   return { path, totalDistance: distances[endId] };
 }
-
-/**
- * Finds and logs the shortest path between two embeddings.
- * @param embeddings - Array of all embeddings
- * @param startId - ID of the starting embedding
- * @param endId - ID of the ending embedding
- */
-export function findPath(
-  embeddings: Embedding[],
-  startId: string,
-  endId: string
-) {
-  const result = dijkstra(embeddings, startId, endId);
-
-  if (result) {
-    console.log("Shortest path:");
-    result.path.forEach((edge, index) => {
-      console.log(
-        `Step ${index + 1}: ${edge.from.id} -> ${
-          edge.to.id
-        } (distance: ${edge.distance.toFixed(2)})`
-      );
-    });
-    console.log(`Total distance: ${result.totalDistance.toFixed(2)}`);
-  } else {
-    console.log("No path found");
-  }
-}

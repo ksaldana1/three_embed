@@ -43,7 +43,6 @@ export function World() {
       !state.targetSelection
     )
       return { points: [], paths: [] };
-    console.log("dijstra", state);
     const paths = dijkstra(
       EMBEDDINGS,
       state.selected?.id,
@@ -58,7 +57,6 @@ export function World() {
       paths: paths?.path,
     };
   }, [state, scale]);
-  console.log(paths);
 
   return (
     <group>
