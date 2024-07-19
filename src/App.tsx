@@ -1,10 +1,10 @@
 import { Canvas } from "@react-three/fiber";
 import clsx from "clsx";
 import { animated, useSpring } from "react-spring";
+import { Embedding } from "./common/types";
 import { Scene } from "./components/Scene";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
-import { Embedding } from "./common/types";
 
 function App() {
   return (
