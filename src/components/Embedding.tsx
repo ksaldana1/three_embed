@@ -30,12 +30,12 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   return (
     <mesh
       ref={ref}
-      onClick={() => {
+      onDoubleClick={() => {
         onClick(embedding);
       }}
       position={position}
     >
-      <boxGeometry args={[10, 10, 1]} />
+      <boxGeometry args={[50, 50, 0.5]} />
       <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />
     </mesh>
   );

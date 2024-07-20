@@ -27,7 +27,7 @@ export interface Episode extends Embedding {
   hash: string;
 }
 
-export const SCALING_FACTOR = 50;
+export const SCALING_FACTOR = 200;
 
 export enum MODE {
   NEAREST_NEIGHBORS = 0,
