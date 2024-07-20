@@ -22,6 +22,10 @@ export function World() {
     },
   });
 
+  const selectedEmbedding = useMemo(() => {
+    return state.embeddings.find((e) => e.id === state?.selected?.id);
+  }, [state.embeddings, state.selected]);
+
   // this kinda suckcs
   useEffect(() => {
     dispatch({ type: "SElECT_MODE", payload: { mode } });
@@ -30,11 +34,11 @@ export function World() {
   // these both can suck less
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition = state.selected?.umap.map((x) => x * scale) ?? [];
-    const neighbors = state.selected?.neighbors
+    const neighbors = selectedEmbedding?.neighbors
       ?.map((id) => embeddings.find((embedding) => embedding.id === id))
       .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [state.selected, scale, embeddings]);
+  }, [state, scale, embeddings, selectedEmbedding]);
 
   const { points, paths } = useMemo(() => {
     if (
@@ -66,7 +70,7 @@ export function World() {
             state.mode === MODE.NEAREST_NEIGHBORS &&
             state.selected &&
             embedding.id !== state.selected?.id &&
-            !state.selected?.neighbors.includes(embedding.id)
+            !selectedEmbedding?.neighbors.includes(embedding.id)
           ) ||
           !!(
             state.mode === MODE.PATH_EXPLORER &&

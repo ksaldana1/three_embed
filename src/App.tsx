@@ -60,7 +60,7 @@ function Sidebar() {
         });
       });
     }
-  }, [state?.selected?.id]);
+  }, [state?.selected, dispatch]);
   const isOpen = state.selected;
   const { height } = useSpring({
     height: isOpen ? "75%" : "0%",
@@ -92,7 +92,7 @@ function Content({
   embedding: SelectedType;
   neighbors: string[];
 }) {
-  console.log(embedding);
+  const { state } = useAppContext();
   return (
     <ul className="flex flex-col p-5 gap-3">
       <li>ID: {embedding.imdbID}</li>
@@ -100,7 +100,7 @@ function Content({
       <li>Director: {embedding.Director}</li>
       <div>Neighbors:</div>
       {neighbors.map((n) => (
-        <li>{n}</li>
+        <li key={n}>{state.embeddings.find((e) => e.id === n)?.name}</li>
       ))}
     </ul>
   );

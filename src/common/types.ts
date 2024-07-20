@@ -2,6 +2,7 @@ export type UMAP = [number, number, number];
 
 export interface Embedding {
   id: string;
+  name: string;
   umap: UMAP;
   neighbors: Array<Embedding["id"]>;
   image_url: string;
