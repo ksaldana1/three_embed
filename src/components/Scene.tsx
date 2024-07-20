@@ -6,8 +6,14 @@ import {
   Stage,
 } from "@react-three/drei";
 import { World } from "./World";
+import { useAppContext } from "../context/app";
 
 export function Scene() {
+  const { embeddings } = useAppContext();
+
+  if (!embeddings?.length) {
+    return null;
+  }
   return (
     <Stage>
       <OrbitControls makeDefault />

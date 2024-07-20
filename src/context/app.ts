@@ -20,6 +20,7 @@ export type AppEvents =
 export type AppContext = {
   state: AppState;
   dispatch: (event: AppEvents) => void;
+  embeddings: Embedding[];
 };
 
 export const Context = createContext<AppContext>(null!);

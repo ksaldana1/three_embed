@@ -1,14 +1,13 @@
 import { Line } from "@react-three/drei";
 import { useControls } from "leva";
 import { useEffect, useMemo } from "react";
-import { EMBEDDINGS } from "../common/data";
 import { Embedding, MODE, SCALING_FACTOR, UMAP } from "../common/types";
 import { dijkstra } from "../common/utils";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 
 export function World() {
-  const { state, dispatch } = useAppContext();
+  const { state, dispatch, embeddings } = useAppContext();
   const { scale, mode } = useControls({
     scale: {
       value: SCALING_FACTOR,
@@ -31,10 +30,10 @@ export function World() {
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition = state.selected?.umap.map((x) => x * scale) ?? [];
     const neighbors = state.selected?.neighbors
-      ?.map((id) => EMBEDDINGS.find((embedding) => embedding.id === id))
+      ?.map((id) => embeddings.find((embedding) => embedding.id === id))
       .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [state.selected, scale]);
+  }, [state.selected, scale, embeddings]);
 
   const { points, paths } = useMemo(() => {
     if (
@@ -44,7 +43,7 @@ export function World() {
     )
       return { points: [], paths: [] };
     const paths = dijkstra(
-      EMBEDDINGS,
+      embeddings,
       state.selected?.id,
       state.targetSelection?.id
     );
@@ -56,11 +55,11 @@ export function World() {
         ]) ?? [],
       paths: paths?.path,
     };
-  }, [state, scale]);
+  }, [state, scale, embeddings]);
 
   return (
     <group>
-      {EMBEDDINGS.map((embedding) => {
+      {embeddings.map((embedding) => {
         const fade =
           !!(
             state.mode === MODE.NEAREST_NEIGHBORS &&
