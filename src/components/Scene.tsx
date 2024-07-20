@@ -9,9 +9,9 @@ import { World } from "./World";
 import { useAppContext } from "../context/app";
 
 export function Scene() {
-  const { embeddings } = useAppContext();
+  const { state } = useAppContext();
 
-  if (!embeddings?.length) {
+  if (!state.embeddings?.length) {
     return null;
   }
   return (

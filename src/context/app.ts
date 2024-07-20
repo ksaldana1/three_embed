@@ -1,12 +1,18 @@
 import { createContext, Reducer, useContext } from "react";
 import { Embedding, MODE } from "../common/types";
 import { match, P } from "ts-pattern";
+import { produce } from "immer";
 
 export type AppState =
-  | { mode: MODE.NEAREST_NEIGHBORS; selected: Embedding | null }
+  | {
+      mode: MODE.NEAREST_NEIGHBORS;
+      selected: Embedding | null;
+      embeddings: Embedding[];
+    }
   | {
       mode: MODE.PATH_EXPLORER;
       selected: Embedding | null;
+      embeddings: Embedding[];
       targetSelection: Embedding | null;
     };
 
@@ -15,12 +21,13 @@ export type AppEvents =
       type: "USER_CLICK_EMBEDDING";
       payload: { embedding: Embedding | null };
     }
-  | { type: "SElECT_MODE"; payload: { mode: MODE } };
+  | { type: "SElECT_MODE"; payload: { mode: MODE } }
+  | { type: "UPDATE_NEIGHBORS"; payload: { neighbors: string[]; id: string } }
+  | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } };
 
 export type AppContext = {
   state: AppState;
   dispatch: (event: AppEvents) => void;
-  embeddings: Embedding[];
 };
 
 export const Context = createContext<AppContext>(null!);
@@ -66,6 +73,23 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
         };
       }
     )
+    .with([P.any, { type: "UPDATE_NEIGHBORS" }], ([state, event]) => {
+      if (!state.selected) return state;
+      return produce(state, (draftState) => {
+        const embedding = draftState.embeddings.find(
+          (e) => e.id === state?.selected?.id
+        )!;
+
+        embedding.neighbors = event.payload.neighbors;
+      });
+    })
+    .with([P.any, { type: "EMBEDDINGS_RECEIVED" }], ([state, event]) => {
+      return {
+        ...state,
+        embeddings: event.payload.embeddings,
+      };
+    })
+
     .with([P.any, { type: "SElECT_MODE" }], ([state, event]) => {
       return {
         ...state,
@@ -73,5 +97,6 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
         targetSelection: null,
       };
     })
+
     .run();
 };

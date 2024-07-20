@@ -4,274 +4,294 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export type Database = {
   public: {
     Tables: {
       movies: {
         Row: {
-          Actors: string | null
-          Awards: string | null
-          BoxOffice: string | null
-          Country: string | null
-          Director: string | null
-          embedding: string | null
-          Genre: string | null
-          imdbID: string
-          imdbRating: string | null
-          imdbVotes: string | null
-          Language: string | null
-          Metascore: string | null
-          Plot: string | null
-          Poster: string | null
-          Rated: string | null
-          Released: string | null
-          Runtime: string | null
-          Title: string | null
-          Type: string | null
-          umap: string | null
-          Writer: string | null
-          Year: number | null
-        }
+          Actors: string | null;
+          Awards: string | null;
+          BoxOffice: string | null;
+          Country: string | null;
+          Director: string | null;
+          embedding: string | null;
+          Genre: string | null;
+          imdbID: string;
+          imdbRating: string | null;
+          imdbVotes: string | null;
+          Language: string | null;
+          Metascore: string | null;
+          Plot: string | null;
+          Poster: string | null;
+          Rated: string | null;
+          Released: string | null;
+          Runtime: string | null;
+          Title: string | null;
+          Type: string | null;
+          umap: string | null;
+          Writer: string | null;
+          Year: number | null;
+        };
         Insert: {
-          Actors?: string | null
-          Awards?: string | null
-          BoxOffice?: string | null
-          Country?: string | null
-          Director?: string | null
-          embedding?: string | null
-          Genre?: string | null
-          imdbID: string
-          imdbRating?: string | null
-          imdbVotes?: string | null
-          Language?: string | null
-          Metascore?: string | null
-          Plot?: string | null
-          Poster?: string | null
-          Rated?: string | null
-          Released?: string | null
-          Runtime?: string | null
-          Title?: string | null
-          Type?: string | null
-          umap?: string | null
-          Writer?: string | null
-          Year?: number | null
-        }
+          Actors?: string | null;
+          Awards?: string | null;
+          BoxOffice?: string | null;
+          Country?: string | null;
+          Director?: string | null;
+          embedding?: string | null;
+          Genre?: string | null;
+          imdbID: string;
+          imdbRating?: string | null;
+          imdbVotes?: string | null;
+          Language?: string | null;
+          Metascore?: string | null;
+          Plot?: string | null;
+          Poster?: string | null;
+          Rated?: string | null;
+          Released?: string | null;
+          Runtime?: string | null;
+          Title?: string | null;
+          Type?: string | null;
+          umap?: string | null;
+          Writer?: string | null;
+          Year?: number | null;
+        };
         Update: {
-          Actors?: string | null
-          Awards?: string | null
-          BoxOffice?: string | null
-          Country?: string | null
-          Director?: string | null
-          embedding?: string | null
-          Genre?: string | null
-          imdbID?: string
-          imdbRating?: string | null
-          imdbVotes?: string | null
-          Language?: string | null
-          Metascore?: string | null
-          Plot?: string | null
-          Poster?: string | null
-          Rated?: string | null
-          Released?: string | null
-          Runtime?: string | null
-          Title?: string | null
-          Type?: string | null
-          umap?: string | null
-          Writer?: string | null
-          Year?: number | null
-        }
-        Relationships: []
-      }
-    }
+          Actors?: string | null;
+          Awards?: string | null;
+          BoxOffice?: string | null;
+          Country?: string | null;
+          Director?: string | null;
+          embedding?: string | null;
+          Genre?: string | null;
+          imdbID?: string;
+          imdbRating?: string | null;
+          imdbVotes?: string | null;
+          Language?: string | null;
+          Metascore?: string | null;
+          Plot?: string | null;
+          Poster?: string | null;
+          Rated?: string | null;
+          Released?: string | null;
+          Runtime?: string | null;
+          Title?: string | null;
+          Type?: string | null;
+          umap?: string | null;
+          Writer?: string | null;
+          Year?: number | null;
+        };
+        Relationships: [];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
       binary_quantize:
         | {
             Args: {
-              "": string
-            }
-            Returns: unknown
+              "": string;
+            };
+            Returns: unknown;
           }
         | {
             Args: {
-              "": unknown
-            }
-            Returns: unknown
-          }
+              "": unknown;
+            };
+            Returns: unknown;
+          };
       halfvec_avg: {
         Args: {
-          "": number[]
-        }
-        Returns: unknown
-      }
+          "": number[];
+        };
+        Returns: unknown;
+      };
       halfvec_out: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       halfvec_send: {
         Args: {
-          "": unknown
-        }
-        Returns: string
-      }
+          "": unknown;
+        };
+        Returns: string;
+      };
       halfvec_typmod_in: {
         Args: {
-          "": unknown[]
-        }
-        Returns: number
-      }
+          "": unknown[];
+        };
+        Returns: number;
+      };
       hnsw_bit_support: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       hnsw_halfvec_support: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       hnsw_sparsevec_support: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       hnswhandler: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       ivfflat_bit_support: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       ivfflat_halfvec_support: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       ivfflathandler: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       l2_norm:
         | {
             Args: {
-              "": unknown
-            }
-            Returns: number
+              "": unknown;
+            };
+            Returns: number;
           }
         | {
             Args: {
-              "": unknown
-            }
-            Returns: number
-          }
+              "": unknown;
+            };
+            Returns: number;
+          };
       l2_normalize:
         | {
             Args: {
-              "": string
-            }
-            Returns: string
+              "": string;
+            };
+            Returns: string;
           }
         | {
             Args: {
-              "": unknown
-            }
-            Returns: unknown
+              "": unknown;
+            };
+            Returns: unknown;
           }
         | {
             Args: {
-              "": unknown
-            }
-            Returns: unknown
+              "": unknown;
+            };
+            Returns: unknown;
+          };
+      match_movies:
+        | {
+            Args: {
+              movieid: string;
+            };
+            Returns: {
+              imdbid: string;
+              title: string;
+            }[];
           }
+        | {
+            Args: {
+              movieid: string;
+              count: number;
+            };
+            Returns: {
+              imdbid: string;
+              title: string;
+            }[];
+          };
       sparsevec_out: {
         Args: {
-          "": unknown
-        }
-        Returns: unknown
-      }
+          "": unknown;
+        };
+        Returns: unknown;
+      };
       sparsevec_send: {
         Args: {
-          "": unknown
-        }
-        Returns: string
-      }
+          "": unknown;
+        };
+        Returns: string;
+      };
       sparsevec_typmod_in: {
         Args: {
-          "": unknown[]
-        }
-        Returns: number
-      }
+          "": unknown[];
+        };
+        Returns: number;
+      };
       vector_avg: {
         Args: {
-          "": number[]
-        }
-        Returns: string
-      }
+          "": number[];
+        };
+        Returns: string;
+      };
       vector_dims:
         | {
             Args: {
-              "": string
-            }
-            Returns: number
+              "": string;
+            };
+            Returns: number;
           }
         | {
             Args: {
-              "": unknown
-            }
-            Returns: number
-          }
+              "": unknown;
+            };
+            Returns: number;
+          };
       vector_norm: {
         Args: {
-          "": string
-        }
-        Returns: number
-      }
+          "": string;
+        };
+        Returns: number;
+      };
       vector_out: {
         Args: {
-          "": string
-        }
-        Returns: unknown
-      }
+          "": string;
+        };
+        Returns: unknown;
+      };
       vector_send: {
         Args: {
-          "": string
-        }
-        Returns: string
-      }
+          "": string;
+        };
+        Returns: string;
+      };
       vector_typmod_in: {
         Args: {
-          "": unknown[]
-        }
-        Returns: number
-      }
-    }
+          "": unknown[];
+        };
+        Returns: number;
+      };
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+      [_ in never]: never;
+    };
+  };
+};
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type PublicSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -280,23 +300,23 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+      Row: infer R;
     }
     ? R
     : never
   : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R;
+    }
+    ? R
     : never
+  : never;
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -304,20 +324,20 @@ export type TablesInsert<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+      Insert: infer I;
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I;
+    }
+    ? I
     : never
+  : never;
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -325,20 +345,20 @@ export type TablesUpdate<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never = never
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+      Update: infer U;
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U;
+    }
+    ? U
     : never
+  : never;
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -346,9 +366,9 @@ export type Enums<
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never = never
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+  : never;

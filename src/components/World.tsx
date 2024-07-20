@@ -7,7 +7,8 @@ import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 
 export function World() {
-  const { state, dispatch, embeddings } = useAppContext();
+  const { state, dispatch } = useAppContext();
+  const embeddings = state.embeddings;
   const { scale, mode } = useControls({
     scale: {
       value: SCALING_FACTOR,

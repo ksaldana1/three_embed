@@ -36,8 +36,13 @@ type SelectedType = PromiseReturnType<
   ReturnType<typeof fetchSelectedEmbedding>
 >;
 
+async function fetchNeighbors(id: string) {
+  const { data } = await client.rpc("match_movies", { movieid: id, count: 5 });
+  return data;
+}
+
 function Sidebar() {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   const [selectedData, setSelectedData] = useState<SelectedType | null>(null);
 
   useEffect(() => {
@@ -45,6 +50,15 @@ function Sidebar() {
       fetchSelectedEmbedding(state.selected.id).then((data) =>
         setSelectedData(data)
       );
+      fetchNeighbors(state?.selected?.id).then((data) => {
+        dispatch({
+          type: "UPDATE_NEIGHBORS",
+          payload: {
+            id: state.selected!.id,
+            neighbors: data!.map((d) => d.imdbid),
+          },
+        });
+      });
     }
   }, [state?.selected?.id]);
   const isOpen = state.selected;
@@ -58,17 +72,36 @@ function Sidebar() {
         "absolute w-96 bg-blue-100 opacity-75 left-12 rounded-md"
       )}
     >
-      {isOpen && selectedData ? <Content embedding={selectedData} /> : null}
+      {isOpen && selectedData ? (
+        <Content
+          neighbors={
+            state.embeddings.find((e) => e.id === state?.selected?.id)
+              ?.neighbors ?? []
+          }
+          embedding={selectedData}
+        />
+      ) : null}
     </animated.div>
   );
 }
 
-function Content({ embedding }: { embedding: SelectedType }) {
+function Content({
+  embedding,
+  neighbors,
+}: {
+  embedding: SelectedType;
+  neighbors: string[];
+}) {
+  console.log(embedding);
   return (
     <ul className="flex flex-col p-5 gap-3">
       <li>ID: {embedding.imdbID}</li>
       <li>Title: {embedding.Title}</li>
       <li>Director: {embedding.Director}</li>
+      <div>Neighbors:</div>
+      {neighbors.map((n) => (
+        <li>{n}</li>
+      ))}
     </ul>
   );
 }
