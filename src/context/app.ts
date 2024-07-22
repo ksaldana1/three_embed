@@ -21,9 +21,10 @@ export type AppEvents =
       type: "USER_CLICK_EMBEDDING";
       payload: { embedding: Embedding | null };
     }
-  | { type: "SElECT_MODE"; payload: { mode: MODE } }
+  | { type: "SELECT_MODE"; payload: { mode: MODE } }
   | { type: "UPDATE_NEIGHBORS"; payload: { neighbors: string[]; id: string } }
-  | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } };
+  | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
+  | { type: "SIDEBAR_CLOSED" };
 
 export type AppContext = {
   state: AppState;
@@ -41,6 +42,7 @@ export const useAppContext = () => {
 };
 
 export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
+  console.log(event);
   return match([state, event])
     .returnType<AppState>()
     .with(
@@ -89,8 +91,15 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
         embeddings: event.payload.embeddings,
       };
     })
+    .with([P.any, { type: "SIDEBAR_CLOSED" }], ([state]) => {
+      return {
+        ...state,
+        selected: null,
+        targetSelection: null,
+      };
+    })
 
-    .with([P.any, { type: "SElECT_MODE" }], ([state, event]) => {
+    .with([P.any, { type: "SELECT_MODE" }], ([state, event]) => {
       return {
         ...state,
         mode: event.payload.mode,

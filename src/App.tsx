@@ -46,6 +46,15 @@ function Sidebar() {
   const [selectedData, setSelectedData] = useState<SelectedType | null>(null);
 
   useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.code === "Escape") dispatch({ type: "SIDEBAR_CLOSED" });
+    };
+
+    document.addEventListener("keydown", listener);
+    return () => document.removeEventListener("keydown", listener);
+  }, []);
+
+  useEffect(() => {
     if (state?.selected?.id) {
       fetchSelectedEmbedding(state.selected.id).then((data) =>
         setSelectedData(data)
@@ -61,7 +70,7 @@ function Sidebar() {
       });
     }
   }, [state?.selected, dispatch]);
-  const isOpen = state.selected;
+  const isOpen = !!state.selected;
   const { height } = useSpring({
     height: isOpen ? "75%" : "0%",
   });
@@ -69,7 +78,7 @@ function Sidebar() {
     <animated.div
       style={{ height }}
       className={clsx(
-        "absolute w-96 bg-blue-100 opacity-75 left-12 rounded-md"
+        "absolute w-96 bg-blue-100 opacity-80 left-12 rounded-md shadow-lg"
       )}
     >
       {isOpen && selectedData ? (
@@ -92,15 +101,28 @@ function Content({
   embedding: SelectedType;
   neighbors: string[];
 }) {
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
   return (
     <ul className="flex flex-col p-5 gap-3">
       <li>ID: {embedding.imdbID}</li>
       <li>Title: {embedding.Title}</li>
       <li>Director: {embedding.Director}</li>
-      <div>Neighbors:</div>
+      <div className="italic font-bold">Closest Neighbors</div>
       {neighbors.map((n) => (
-        <li key={n}>{state.embeddings.find((e) => e.id === n)?.name}</li>
+        <li
+          key={n}
+          className="underline cursor-pointer"
+          onClick={() => {
+            dispatch({
+              type: "USER_CLICK_EMBEDDING",
+              payload: {
+                embedding: state.embeddings.find((e) => e.id === n) ?? null,
+              },
+            });
+          }}
+        >
+          {state.embeddings.find((e) => e.id === n)?.name}
+        </li>
       ))}
     </ul>
   );

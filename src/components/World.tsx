@@ -1,13 +1,17 @@
-import { Line } from "@react-three/drei";
+import { Line, useKeyboardControls } from "@react-three/drei";
 import { useControls } from "leva";
 import { useEffect, useMemo } from "react";
 import { Embedding, MODE, SCALING_FACTOR, UMAP } from "../common/types";
 import { dijkstra } from "../common/utils";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
+import { Controls } from "./Scene";
+import { useFrame, useThree } from "@react-three/fiber";
 
 export function World() {
   const { state, dispatch } = useAppContext();
+  useKeyboard();
+
   const embeddings = state.embeddings;
   const { scale, mode } = useControls({
     scale: {
@@ -28,7 +32,7 @@ export function World() {
 
   // this kinda suckcs
   useEffect(() => {
-    dispatch({ type: "SElECT_MODE", payload: { mode } });
+    dispatch({ type: "SELECT_MODE", payload: { mode } });
   }, [mode, dispatch]);
 
   // these both can suck less
@@ -122,4 +126,20 @@ export function World() {
         })}
     </group>
   );
+}
+
+function useKeyboard() {
+  const { camera } = useThree();
+  const forwardPressed = useKeyboardControls<Controls>(
+    (state) => state.forward
+  );
+  const backwardsPressed = useKeyboardControls<Controls>((state) => state.back);
+  useFrame(() => {
+    if (forwardPressed) {
+      camera.position.z -= 10;
+    }
+    if (backwardsPressed) {
+      camera.position.z += 10;
+    }
+  });
 }
