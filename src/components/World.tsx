@@ -60,6 +60,7 @@ export function World() {
       {neighborPositions?.map((neighborPosition, index) => {
         return (
           <Line
+            dashed
             key={`${state.selectedId}-${index}`}
             points={[currentPosition, neighborPosition]}
             color="black"

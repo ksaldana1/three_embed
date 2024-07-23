@@ -6,10 +6,12 @@ import { Embedding } from "./common/types";
 import { Scene } from "./components/Scene";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
+import { Search } from "./components/Search";
 
 function App() {
   return (
     <AppProvider>
+      <Search />
       <div className="flex h-full w-full overflow-hidden items-center">
         <div className="flex w-full h-full">
           <Canvas className="w-full h-full">
@@ -31,7 +33,7 @@ function Sidebar() {
 
   const isOpen = !!state.selectedId;
   const { height } = useSpring({
-    height: isOpen ? "75%" : "0%",
+    height: isOpen ? "50%" : "0%",
   });
   return (
     <animated.div
