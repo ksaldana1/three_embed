@@ -2,10 +2,9 @@ import { Line, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
 import { useMemo } from "react";
-import { Embedding, SCALING_FACTOR, UMAP } from "../common/types";
+import { Controls, Embedding, SCALING_FACTOR, UMAP } from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
-import { Controls } from "./Scene";
 
 export function World() {
   const { state, dispatch } = useAppContext();

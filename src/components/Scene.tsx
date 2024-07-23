@@ -11,14 +11,7 @@ import { useMemo } from "react";
 import { World } from "./World";
 
 import { useAppContext } from "../context/app";
-
-export enum Controls {
-  forward = "forward",
-  back = "back",
-  left = "left",
-  right = "right",
-  jump = "jump",
-}
+import { Controls } from "../common/types";
 
 export function Scene() {
   const { state } = useAppContext();

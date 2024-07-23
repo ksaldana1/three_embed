@@ -29,3 +29,11 @@ export interface Episode extends Embedding {
 }
 
 export const SCALING_FACTOR = 200;
+
+export enum Controls {
+  forward = "forward",
+  back = "back",
+  left = "left",
+  right = "right",
+  jump = "jump",
+}

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useReducer } from "react";
 import { generateEmbeddings } from "../common/data";
-import { MODE } from "../common/types";
 import { appReducer, Context } from "./app";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {

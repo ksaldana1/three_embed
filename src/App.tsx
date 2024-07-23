@@ -1,12 +1,11 @@
 import { Canvas } from "@react-three/fiber";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { animated, useSpring } from "react-spring";
-import { client } from "./common/client";
+import { Embedding } from "./common/types";
 import { Scene } from "./components/Scene";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
-import { Embedding } from "./common/types";
 
 function App() {
   return (
@@ -24,20 +23,11 @@ function App() {
 }
 
 function Sidebar() {
-  const { state, dispatch } = useAppContext();
+  const { state } = useAppContext();
 
   const selectedEmbedding = state.embeddings.find(
     (e) => e.id === state.selectedId
   );
-
-  useEffect(() => {
-    const listener = (event: KeyboardEvent) => {
-      if (event.code === "Escape") dispatch({ type: "SIDEBAR_CLOSED" });
-    };
-
-    document.addEventListener("keydown", listener);
-    return () => document.removeEventListener("keydown", listener);
-  }, []);
 
   const isOpen = !!state.selectedId;
   const { height } = useSpring({
@@ -64,8 +54,17 @@ interface Movie extends Embedding {
 }
 
 function Content({ embedding }: { embedding: Movie }) {
-  console.log(embedding);
   const { state, dispatch } = useAppContext();
+
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (event.code === "Escape") dispatch({ type: "SIDEBAR_CLOSED" });
+    };
+
+    document.addEventListener("keydown", listener);
+    return () => document.removeEventListener("keydown", listener);
+  }, []);
+
   return (
     <ul className="flex flex-col p-5 gap-3">
       <li>ID: {embedding.imdbID}</li>
