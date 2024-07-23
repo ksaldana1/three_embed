@@ -1,21 +1,22 @@
 import { createContext, Reducer, useContext } from "react";
-import { Embedding, MODE } from "../common/types";
 import { match, P } from "ts-pattern";
+import { DistanceFn, Embedding } from "../common/types";
 
-export type AppState =
-  | { mode: MODE.NEAREST_NEIGHBORS; selected: Embedding | null }
-  | {
-      mode: MODE.PATH_EXPLORER;
-      selected: Embedding | null;
-      targetSelection: Embedding | null;
-    };
+export type AppState = {
+  selectedId: Embedding["id"] | null;
+  embeddings: Embedding[];
+  search: [number, number, number] | null;
+  distanceFn: DistanceFn;
+};
 
 export type AppEvents =
   | {
       type: "USER_CLICK_EMBEDDING";
-      payload: { embedding: Embedding | null };
+      payload: { embeddingId: string | null };
     }
-  | { type: "SElECT_MODE"; payload: { mode: MODE } };
+  | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
+  | { type: "SIDEBAR_CLOSED" }
+  | { type: "CHANGE_DISTANCE_FUNCTION"; payload: { distanceFn: DistanceFn } };
 
 export type AppContext = {
   state: AppState;
@@ -33,44 +34,35 @@ export const useAppContext = () => {
 };
 
 export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
+  console.log(event);
   return match([state, event])
     .returnType<AppState>()
-    .with(
-      [{ mode: MODE.NEAREST_NEIGHBORS }, { type: "USER_CLICK_EMBEDDING" }],
-      ([state, event]) => {
-        return {
-          ...state,
-          mode: MODE.NEAREST_NEIGHBORS,
-          selected:
-            state.selected === event.payload.embedding
-              ? null
-              : event.payload.embedding,
-        } as AppState;
-      }
-    )
-    .with(
-      [{ mode: MODE.PATH_EXPLORER }, { type: "USER_CLICK_EMBEDDING" }],
-      ([state, event]) => {
-        return {
-          ...state,
-          mode: MODE.PATH_EXPLORER,
-          selected:
-            state.selected && state.selected === event.payload.embedding
-              ? null
-              : state.selected || event.payload.embedding,
-          targetSelection:
-            state.selected && state.selected !== event.payload.embedding
-              ? event.payload.embedding
-              : null,
-        };
-      }
-    )
-    .with([P.any, { type: "SElECT_MODE" }], ([state, event]) => {
+    .with([P.any, { type: "USER_CLICK_EMBEDDING" }], ([state, event]) => {
       return {
         ...state,
-        mode: event.payload.mode,
-        targetSelection: null,
+        selectedId:
+          state.selectedId === event.payload.embeddingId
+            ? null
+            : event.payload.embeddingId,
+      } as AppState;
+    })
+    .with([P.any, { type: "CHANGE_DISTANCE_FUNCTION" }], ([state, event]) => {
+      return {
+        ...state,
+        distanceFn: event.payload.distanceFn,
       };
     })
-    .run();
+    .with([P.any, { type: "EMBEDDINGS_RECEIVED" }], ([state, event]) => {
+      return {
+        ...state,
+        embeddings: event.payload.embeddings,
+      };
+    })
+    .with([P.any, { type: "SIDEBAR_CLOSED" }], ([state]) => {
+      return {
+        ...state,
+        selectedId: null,
+      };
+    })
+    .exhaustive();
 };

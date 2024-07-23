@@ -2,21 +2,47 @@ import {
   DragControls,
   GizmoHelper,
   GizmoViewport,
+  KeyboardControls,
+  KeyboardControlsEntry,
   OrbitControls,
   Stage,
 } from "@react-three/drei";
+import { useMemo } from "react";
 import { World } from "./World";
 
+import { useAppContext } from "../context/app";
+import { Controls } from "../common/types";
+
 export function Scene() {
+  const { state } = useAppContext();
+  const map = useMemo<KeyboardControlsEntry<Controls>[]>(
+    () => [
+      { name: Controls.forward, keys: ["ArrowUp", "KeyW"] },
+      { name: Controls.back, keys: ["ArrowDown", "KeyS"] },
+      { name: Controls.left, keys: ["ArrowLeft", "KeyA"] },
+      { name: Controls.right, keys: ["ArrowRight", "KeyD"] },
+      { name: Controls.jump, keys: ["Space"] },
+    ],
+    []
+  );
+
+  if (!state.embeddings?.length) {
+    return null;
+  }
   return (
-    <Stage>
-      <OrbitControls makeDefault />
-      <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
-        <GizmoViewport labelColor="white" axisHeadScale={1} />
-      </GizmoHelper>
-      <DragControls>
-        <World />
-      </DragControls>
-    </Stage>
+    <KeyboardControls map={map}>
+      <Stage
+        adjustCamera
+        center={{ onCentered: (x) => console.log("centered", x) }}
+      >
+        <OrbitControls makeDefault />
+        <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+          <GizmoViewport labelColor="white" axisHeadScale={1} />
+        </GizmoHelper>
+        <DragControls>
+          <World />
+        </DragControls>
+      </Stage>
+    </KeyboardControls>
   );
 }

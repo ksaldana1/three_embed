@@ -1,12 +1,20 @@
-import { useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
+import { generateEmbeddings } from "../common/data";
 import { appReducer, Context } from "./app";
-import { MODE } from "../common/types";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer<typeof appReducer>(appReducer, {
-    mode: MODE.NEAREST_NEIGHBORS,
-    selected: null,
+    selectedId: null,
+    embeddings: [],
+    search: null,
+    distanceFn: "Cosine",
   });
+
+  useEffect(() => {
+    generateEmbeddings().then((embeddings) => {
+      dispatch({ type: "EMBEDDINGS_RECEIVED", payload: { embeddings } });
+    });
+  }, []);
 
   const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 

@@ -9,35 +9,45 @@ interface EmbeddingProps {
   onClick: (embedding: Embedding | null) => void;
   scale?: number;
   fade?: boolean;
+  umap: "umap" | "umap_large";
 }
 
-export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
-  const imageName = embedding.id.padStart(3, "0");
-  const texture = useTexture(`../../imgs/${imageName}.jpg`);
+export function Embed({
+  embedding,
+  onClick,
+  scale,
+  fade,
+  umap,
+}: EmbeddingProps) {
+  const texture = useTexture(embedding.image_url);
   const ref = useRef<Mesh>(null!);
   const scaleOrDefault = scale ?? SCALING_FACTOR;
 
   const position = useMemo(() => {
-    const [x, y, z] = embedding.umap;
+    const [x, y, z] =
+      umap === "umap_large" ? embedding.umap_large : embedding.umap;
     return [
       x * scaleOrDefault,
       y * scaleOrDefault,
       z * scaleOrDefault,
     ] as const;
-  }, [embedding.umap, scaleOrDefault]);
+  }, [umap, embedding.umap, embedding.umap_large, scaleOrDefault]);
 
-  const { opacity } = useSpring({ opacity: fade ? 0.2 : 1 });
+  const { opacity } = useSpring({ opacity: fade ? 0.05 : 1 });
+  const { position: embeddingPosition } = useSpring({
+    position,
+  });
 
   return (
-    <mesh
+    <animated.mesh
       ref={ref}
-      onClick={() => {
+      onDoubleClick={() => {
         onClick(embedding);
       }}
-      position={position}
+      position={embeddingPosition}
     >
-      <boxGeometry args={[10, 10, 1]} />
+      <boxGeometry args={[50, 50, 0.5]} />
       <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />
-    </mesh>
+    </animated.mesh>
   );
 }

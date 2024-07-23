@@ -1,83 +1,87 @@
-import { Line } from "@react-three/drei";
+import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
 import { useControls } from "leva";
-import { useEffect, useMemo } from "react";
-import { EMBEDDINGS } from "../common/data";
-import { Embedding, MODE, SCALING_FACTOR, UMAP } from "../common/types";
-import { dijkstra } from "../common/utils";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Group } from "three";
+import {
+  Controls,
+  DistanceFn,
+  Embedding,
+  SCALING_FACTOR,
+  UMAP,
+} from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
+import { useFrame, useThree } from "@react-three/fiber";
 
 export function World() {
   const { state, dispatch } = useAppContext();
-  const { scale, mode } = useControls({
+  useKeyboard();
+
+  const bounds = useBounds();
+
+  const embeddings = state.embeddings;
+  const { scale, model, distanceFn } = useControls({
     scale: {
       value: SCALING_FACTOR,
       min: 0,
       step: 1,
     },
-    mode: {
-      value: state.mode,
-      min: 0,
-      step: 1,
+    model: {
+      options: ["umap", "umap_large"] as const,
+      value: "umap" as const,
+    },
+    distanceFn: {
+      options: [
+        "Cosine",
+        "L1",
+        "L2",
+        "Inner_Product",
+      ] as const satisfies DistanceFn[],
+      value: state.distanceFn,
     },
   });
 
-  // this kinda suckcs
   useEffect(() => {
-    dispatch({ type: "SElECT_MODE", payload: { mode } });
-  }, [mode, dispatch]);
+    dispatch({ type: "CHANGE_DISTANCE_FUNCTION", payload: { distanceFn } });
+  }, [distanceFn, dispatch]);
 
-  // these both can suck less
+  const worldRef = useRef<Group>(null!);
+
+  const selectedEmbedding = useMemo(() => {
+    return state.embeddings.find((e) => e.id === state?.selectedId);
+  }, [state.embeddings, state.selectedId]);
+
   const [currentPosition, neighborPositions] = useMemo(() => {
-    const currentPosition = state.selected?.umap.map((x) => x * scale) ?? [];
-    const neighbors = state.selected?.neighbors
-      ?.map((id) => EMBEDDINGS.find((embedding) => embedding.id === id))
-      .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
+    const currentPosition =
+      selectedEmbedding?.[model].map((x) => x * scale) ?? [];
+    const neighbors = selectedEmbedding?.neighbors
+      .find((n) => n.distanceFn === distanceFn)
+      ?.neighbors?.map((neighbor) =>
+        embeddings.find((embedding) => embedding.id === neighbor.id)
+      )
+      .map((embedding) => embedding?.[model].map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [state.selected, scale]);
+  }, [scale, embeddings, selectedEmbedding, model, distanceFn]);
 
-  const { points, paths } = useMemo(() => {
-    if (
-      state.mode === MODE.NEAREST_NEIGHBORS ||
-      !state.selected ||
-      !state.targetSelection
-    )
-      return { points: [], paths: [] };
-    const paths = dijkstra(
-      EMBEDDINGS,
-      state.selected?.id,
-      state.targetSelection?.id
-    );
-    return {
-      points:
-        paths?.path.map((path) => [
-          path.from.umap.map((x) => x * scale),
-          path.to.umap.map((x) => x * scale),
-        ]) ?? [],
-      paths: paths?.path,
-    };
-  }, [state, scale]);
+  useLayoutEffect(() => {
+    if (worldRef.current) {
+      setTimeout(() => {
+        bounds.refresh().clip().fit();
+      }, 300);
+    }
+  }, [model]);
 
   return (
-    <group>
-      {EMBEDDINGS.map((embedding) => {
-        const fade =
-          !!(
-            state.mode === MODE.NEAREST_NEIGHBORS &&
-            state.selected &&
-            embedding.id !== state.selected?.id &&
-            !state.selected?.neighbors.includes(embedding.id)
-          ) ||
-          !!(
-            state.mode === MODE.PATH_EXPLORER &&
-            state.selected &&
-            embedding.id !== state.selected.id &&
-            embedding.id !== state.targetSelection?.id &&
-            !paths?.find(
-              (path) =>
-                path?.from.id === embedding.id || path?.to.id === embedding.id
-            )
-          );
+    <group ref={worldRef}>
+      {embeddings.map((embedding) => {
+        const fade = !!(
+          state.selectedId &&
+          embedding.id !== state.selectedId &&
+          !selectedEmbedding?.neighbors
+            .find((n) => n.distanceFn === distanceFn)
+            ?.neighbors.map((n) => n.id)
+            .includes(embedding.id)
+        );
 
         return (
           <Embed
@@ -86,36 +90,52 @@ export function World() {
               dispatch({
                 type: "USER_CLICK_EMBEDDING",
                 payload: {
-                  embedding,
+                  embeddingId: embedding?.id ?? null,
                 },
               });
             }}
             key={embedding.id}
             scale={scale}
             fade={fade}
+            umap={model}
           />
         );
       })}
-      {state.mode === MODE.NEAREST_NEIGHBORS &&
-        neighborPositions?.map((neighborPosition, index) => {
-          return (
-            <Line
-              key={`${state.selected?.id}-${index}`}
-              points={[currentPosition, neighborPosition]}
-              color="black"
-              lineWidth={1}
-            />
-          );
-        })}
-
-      {state.mode === MODE.PATH_EXPLORER &&
-        state.targetSelection &&
-        points.map((point, index) => {
-          return (
-            // @ts-expect-error typing vector3s is annoying
-            <Line key={index} color="black" lineWidth={1} points={point} />
-          );
-        })}
+      {neighborPositions?.map((neighborPosition, index) => {
+        return (
+          <Line
+            dashed
+            key={`${state.selectedId}-${index}`}
+            points={[currentPosition, neighborPosition]}
+            color="black"
+            lineWidth={1}
+          />
+        );
+      })}
     </group>
   );
+}
+
+function useKeyboard() {
+  const [isSearching, setIsSearched] = useState(false);
+  useEffect(() => {
+    const search = document.getElementById("search") as HTMLInputElement;
+    search.addEventListener("focusin", () => {
+      setIsSearched(true);
+    });
+    search.addEventListener("focusout", () => setIsSearched(false));
+  }, []);
+  const { camera } = useThree();
+  const forwardPressed = useKeyboardControls<Controls>(
+    (state) => state.forward
+  );
+  const backwardsPressed = useKeyboardControls<Controls>((state) => state.back);
+  useFrame(() => {
+    if (forwardPressed && !isSearching) {
+      camera.position.z -= 10;
+    }
+    if (backwardsPressed && !isSearching) {
+      camera.position.z += 10;
+    }
+  });
 }

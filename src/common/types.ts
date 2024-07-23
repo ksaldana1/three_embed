@@ -2,10 +2,22 @@ export type UMAP = [number, number, number];
 
 export interface Embedding {
   id: string;
+  name: string;
   umap: UMAP;
-  neighbors: Array<Embedding["id"]>;
+  umap_large: UMAP;
+  neighbors: Array<EmbeddingNeighbors>;
   image_url: string;
 }
+
+export type DistanceFn = "L2" | "L1" | "Cosine" | "Inner_Product";
+
+export type EmbeddingNeighbors = {
+  distanceFn: DistanceFn;
+  neighbors: Array<{
+    id: Embedding["id"];
+    distance: number;
+  }>;
+};
 
 export interface Edge {
   to: Embedding;
@@ -27,9 +39,12 @@ export interface Episode extends Embedding {
   hash: string;
 }
 
-export const SCALING_FACTOR = 50;
+export const SCALING_FACTOR = 200;
 
-export enum MODE {
-  NEAREST_NEIGHBORS = 0,
-  PATH_EXPLORER = 1,
+export enum Controls {
+  forward = "forward",
+  back = "back",
+  left = "left",
+  right = "right",
+  jump = "jump",
 }
