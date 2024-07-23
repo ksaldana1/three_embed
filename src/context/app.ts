@@ -1,27 +1,19 @@
-import { createContext, Reducer, useContext } from "react";
-import { Embedding, MODE } from "../common/types";
-import { match, P } from "ts-pattern";
 import { produce } from "immer";
+import { createContext, Reducer, useContext } from "react";
+import { match, P } from "ts-pattern";
+import { Embedding } from "../common/types";
 
-export type AppState =
-  | {
-      mode: MODE.NEAREST_NEIGHBORS;
-      selected: Embedding | null;
-      embeddings: Embedding[];
-    }
-  | {
-      mode: MODE.PATH_EXPLORER;
-      selected: Embedding | null;
-      embeddings: Embedding[];
-      targetSelection: Embedding | null;
-    };
+export type AppState = {
+  selectedId: Embedding["id"] | null;
+  embeddings: Embedding[];
+  search: [number, number, number] | null;
+};
 
 export type AppEvents =
   | {
       type: "USER_CLICK_EMBEDDING";
-      payload: { embedding: Embedding | null };
+      payload: { embeddingId: string | null };
     }
-  | { type: "SELECT_MODE"; payload: { mode: MODE } }
   | { type: "UPDATE_NEIGHBORS"; payload: { neighbors: string[]; id: string } }
   | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
   | { type: "SIDEBAR_CLOSED" };
@@ -45,41 +37,20 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
   console.log(event);
   return match([state, event])
     .returnType<AppState>()
-    .with(
-      [{ mode: MODE.NEAREST_NEIGHBORS }, { type: "USER_CLICK_EMBEDDING" }],
-      ([state, event]) => {
-        return {
-          ...state,
-          mode: MODE.NEAREST_NEIGHBORS,
-          selected:
-            state.selected === event.payload.embedding
-              ? null
-              : event.payload.embedding,
-        } as AppState;
-      }
-    )
-    .with(
-      [{ mode: MODE.PATH_EXPLORER }, { type: "USER_CLICK_EMBEDDING" }],
-      ([state, event]) => {
-        return {
-          ...state,
-          mode: MODE.PATH_EXPLORER,
-          selected:
-            state.selected && state.selected === event.payload.embedding
-              ? null
-              : state.selected || event.payload.embedding,
-          targetSelection:
-            state.selected && state.selected !== event.payload.embedding
-              ? event.payload.embedding
-              : null,
-        };
-      }
-    )
+    .with([P.any, { type: "USER_CLICK_EMBEDDING" }], ([state, event]) => {
+      return {
+        ...state,
+        selectedId:
+          state.selectedId === event.payload.embeddingId
+            ? null
+            : event.payload.embeddingId,
+      } as AppState;
+    })
     .with([P.any, { type: "UPDATE_NEIGHBORS" }], ([state, event]) => {
-      if (!state.selected) return state;
+      if (!state.selectedId) return state;
       return produce(state, (draftState) => {
         const embedding = draftState.embeddings.find(
-          (e) => e.id === state?.selected?.id
+          (e) => e.id === state?.selectedId
         )!;
 
         embedding.neighbors = event.payload.neighbors;
@@ -94,18 +65,8 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
     .with([P.any, { type: "SIDEBAR_CLOSED" }], ([state]) => {
       return {
         ...state,
-        selected: null,
-        targetSelection: null,
+        selectedId: null,
       };
     })
-
-    .with([P.any, { type: "SELECT_MODE" }], ([state, event]) => {
-      return {
-        ...state,
-        mode: event.payload.mode,
-        targetSelection: null,
-      };
-    })
-
-    .run();
+    .exhaustive();
 };

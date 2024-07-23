@@ -16,12 +16,17 @@ export const EMBEDDINGS: Embedding[] = EPISODES.map((episode) => {
 export const generateEmbeddings: () => Promise<Embedding[]> = async () => {
   const { data } = await client
     .from("movies")
-    .select("imdbID, umap, Poster, Title");
+    .select("imdbID, umap, Poster, Title, Director");
+
+  const { data: neighborData } = await client
+    .from("movie_neighbors")
+    .select("*");
   const resp: Embedding[] = data!.map((movie) => ({
     ...movie,
     id: movie.imdbID,
     name: movie.Title ?? "",
-    neighbors: [],
+    neighbors:
+      neighborData?.find((m) => m.imdbID === movie.imdbID)?.neighbor_ids ?? [],
     image_url: movie.Poster ?? "",
     // @ts-expect-error umap types are weird
     umap: JSON.parse(movie.umap) as UMAP,

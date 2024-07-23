@@ -29,8 +29,3 @@ export interface Episode extends Embedding {
 }
 
 export const SCALING_FACTOR = 200;
-
-export enum MODE {
-  NEAREST_NEIGHBORS = 0,
-  PATH_EXPLORER = 1,
-}

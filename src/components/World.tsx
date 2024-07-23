@@ -1,91 +1,45 @@
 import { Line, useKeyboardControls } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useControls } from "leva";
-import { useEffect, useMemo } from "react";
-import { Embedding, MODE, SCALING_FACTOR, UMAP } from "../common/types";
-import { dijkstra } from "../common/utils";
+import { useMemo } from "react";
+import { Embedding, SCALING_FACTOR, UMAP } from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 import { Controls } from "./Scene";
-import { useFrame, useThree } from "@react-three/fiber";
 
 export function World() {
   const { state, dispatch } = useAppContext();
   useKeyboard();
 
   const embeddings = state.embeddings;
-  const { scale, mode } = useControls({
+  const { scale } = useControls({
     scale: {
       value: SCALING_FACTOR,
-      min: 0,
-      step: 1,
-    },
-    mode: {
-      value: state.mode,
       min: 0,
       step: 1,
     },
   });
 
   const selectedEmbedding = useMemo(() => {
-    return state.embeddings.find((e) => e.id === state?.selected?.id);
-  }, [state.embeddings, state.selected]);
+    return state.embeddings.find((e) => e.id === state?.selectedId);
+  }, [state.embeddings, state.selectedId]);
 
-  // this kinda suckcs
-  useEffect(() => {
-    dispatch({ type: "SELECT_MODE", payload: { mode } });
-  }, [mode, dispatch]);
-
-  // these both can suck less
   const [currentPosition, neighborPositions] = useMemo(() => {
-    const currentPosition = state.selected?.umap.map((x) => x * scale) ?? [];
+    const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
       ?.map((id) => embeddings.find((embedding) => embedding.id === id))
       .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [state, scale, embeddings, selectedEmbedding]);
-
-  const { points, paths } = useMemo(() => {
-    if (
-      state.mode === MODE.NEAREST_NEIGHBORS ||
-      !state.selected ||
-      !state.targetSelection
-    )
-      return { points: [], paths: [] };
-    const paths = dijkstra(
-      embeddings,
-      state.selected?.id,
-      state.targetSelection?.id
-    );
-    return {
-      points:
-        paths?.path.map((path) => [
-          path.from.umap.map((x) => x * scale),
-          path.to.umap.map((x) => x * scale),
-        ]) ?? [],
-      paths: paths?.path,
-    };
-  }, [state, scale, embeddings]);
+  }, [scale, embeddings, selectedEmbedding]);
 
   return (
     <group>
       {embeddings.map((embedding) => {
-        const fade =
-          !!(
-            state.mode === MODE.NEAREST_NEIGHBORS &&
-            state.selected &&
-            embedding.id !== state.selected?.id &&
-            !selectedEmbedding?.neighbors.includes(embedding.id)
-          ) ||
-          !!(
-            state.mode === MODE.PATH_EXPLORER &&
-            state.selected &&
-            embedding.id !== state.selected.id &&
-            embedding.id !== state.targetSelection?.id &&
-            !paths?.find(
-              (path) =>
-                path?.from.id === embedding.id || path?.to.id === embedding.id
-            )
-          );
+        const fade = !!(
+          state.selectedId &&
+          embedding.id !== state.selectedId &&
+          !selectedEmbedding?.neighbors.includes(embedding.id)
+        );
 
         return (
           <Embed
@@ -94,7 +48,7 @@ export function World() {
               dispatch({
                 type: "USER_CLICK_EMBEDDING",
                 payload: {
-                  embedding,
+                  embeddingId: embedding?.id ?? null,
                 },
               });
             }}
@@ -104,26 +58,16 @@ export function World() {
           />
         );
       })}
-      {state.mode === MODE.NEAREST_NEIGHBORS &&
-        neighborPositions?.map((neighborPosition, index) => {
-          return (
-            <Line
-              key={`${state.selected?.id}-${index}`}
-              points={[currentPosition, neighborPosition]}
-              color="black"
-              lineWidth={1}
-            />
-          );
-        })}
-
-      {state.mode === MODE.PATH_EXPLORER &&
-        state.targetSelection &&
-        points.map((point, index) => {
-          return (
-            // @ts-expect-error typing vector3s is annoying
-            <Line key={index} color="black" lineWidth={1} points={point} />
-          );
-        })}
+      {neighborPositions?.map((neighborPosition, index) => {
+        return (
+          <Line
+            key={`${state.selectedId}-${index}`}
+            points={[currentPosition, neighborPosition]}
+            color="black"
+            lineWidth={1}
+          />
+        );
+      })}
     </group>
   );
 }
