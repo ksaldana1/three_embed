@@ -17,6 +17,7 @@ export type Database = {
           Country: string | null
           Director: string | null
           embedding: string | null
+          embedding_large: unknown | null
           Genre: string | null
           imdbID: string
           imdbRating: string | null
@@ -31,6 +32,7 @@ export type Database = {
           Title: string | null
           Type: string | null
           umap: string | null
+          umap_large: string | null
           Writer: string | null
           Year: number | null
         }
@@ -41,6 +43,7 @@ export type Database = {
           Country?: string | null
           Director?: string | null
           embedding?: string | null
+          embedding_large?: unknown | null
           Genre?: string | null
           imdbID: string
           imdbRating?: string | null
@@ -55,6 +58,7 @@ export type Database = {
           Title?: string | null
           Type?: string | null
           umap?: string | null
+          umap_large?: string | null
           Writer?: string | null
           Year?: number | null
         }
@@ -65,6 +69,7 @@ export type Database = {
           Country?: string | null
           Director?: string | null
           embedding?: string | null
+          embedding_large?: unknown | null
           Genre?: string | null
           imdbID?: string
           imdbRating?: string | null
@@ -79,6 +84,7 @@ export type Database = {
           Title?: string | null
           Type?: string | null
           umap?: string | null
+          umap_large?: string | null
           Writer?: string | null
           Year?: number | null
         }

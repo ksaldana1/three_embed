@@ -9,6 +9,7 @@ export const EMBEDDINGS: Embedding[] = EPISODES.map((episode) => {
     name: episode.title,
     neighbors: episode.neighbors.map((id) => id.toString()),
     umap: episode.umap as UMAP,
+    umap_large: episode.umap as UMAP,
     image_url: episode.cover_img_url,
   };
 });
@@ -16,7 +17,7 @@ export const EMBEDDINGS: Embedding[] = EPISODES.map((episode) => {
 export const generateEmbeddings: () => Promise<Embedding[]> = async () => {
   const { data } = await client
     .from("movies")
-    .select("imdbID, umap, Poster, Title, Director");
+    .select("imdbID, umap, Poster, Title, Director, umap_large");
 
   const { data: neighborData } = await client
     .from("movie_neighbors")
@@ -30,6 +31,8 @@ export const generateEmbeddings: () => Promise<Embedding[]> = async () => {
     image_url: movie.Poster ?? "",
     // @ts-expect-error umap types are weird
     umap: JSON.parse(movie.umap) as UMAP,
+    // @ts-expect-error umap types are weird
+    umap_large: JSON.parse(movie.umap_large) as UMAP,
   }));
   return resp;
 };

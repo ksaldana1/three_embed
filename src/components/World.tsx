@@ -1,38 +1,56 @@
-import { Line, useKeyboardControls } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
+import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
 import { useControls } from "leva";
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
+import { Group } from "three";
 import { Controls, Embedding, SCALING_FACTOR, UMAP } from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
+import { useFrame, useThree } from "@react-three/fiber";
 
 export function World() {
   const { state, dispatch } = useAppContext();
   useKeyboard();
 
+  const bounds = useBounds();
+
   const embeddings = state.embeddings;
-  const { scale } = useControls({
+  const { scale, model } = useControls({
     scale: {
       value: SCALING_FACTOR,
       min: 0,
       step: 1,
     },
+    model: {
+      options: ["umap", "umap_large"] as const,
+      value: "umap" as const,
+    },
   });
+
+  const worldRef = useRef<Group>(null!);
 
   const selectedEmbedding = useMemo(() => {
     return state.embeddings.find((e) => e.id === state?.selectedId);
   }, [state.embeddings, state.selectedId]);
 
   const [currentPosition, neighborPositions] = useMemo(() => {
-    const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
+    const currentPosition =
+      selectedEmbedding?.[model].map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
       ?.map((id) => embeddings.find((embedding) => embedding.id === id))
-      .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
+      .map((embedding) => embedding?.[model].map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [scale, embeddings, selectedEmbedding]);
+  }, [scale, embeddings, selectedEmbedding, model]);
+
+  useLayoutEffect(() => {
+    if (worldRef.current) {
+      setTimeout(() => {
+        bounds.refresh().reset();
+      }, 300);
+    }
+  }, [model]);
 
   return (
-    <group>
+    <group ref={worldRef}>
       {embeddings.map((embedding) => {
         const fade = !!(
           state.selectedId &&
@@ -54,6 +72,7 @@ export function World() {
             key={embedding.id}
             scale={scale}
             fade={fade}
+            umap={model}
           />
         );
       })}

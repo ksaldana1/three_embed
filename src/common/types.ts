@@ -4,6 +4,7 @@ export interface Embedding {
   id: string;
   name: string;
   umap: UMAP;
+  umap_large: UMAP;
   neighbors: Array<Embedding["id"]>;
   image_url: string;
 }

@@ -32,12 +32,12 @@ function Sidebar() {
   );
 
   const isOpen = !!state.selectedId;
-  const { height } = useSpring({
-    height: isOpen ? "50%" : "0%",
+  const { minHeight } = useSpring({
+    minHeight: isOpen ? "50%" : "0%",
   });
   return (
     <animated.div
-      style={{ height }}
+      style={{ minHeight }}
       className={clsx(
         "absolute w-96 bg-blue-100 opacity-80 left-12 rounded-md shadow-lg"
       )}
