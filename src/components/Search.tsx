@@ -7,7 +7,6 @@ import { useAppContext } from "../context/app";
 export function Search() {
   const [search, setSearch] = useState<string | null>(null);
   const results = useFuse(search ?? null);
-  console.log(results);
   return (
     <div className="absolute z-10">
       <TextField className="flex gap-2 ml-3 mt-2">
@@ -41,6 +40,7 @@ function Result({
   const { dispatch } = useAppContext();
   return (
     <div
+      className="hover:bg-blue-100"
       onClick={() => {
         dispatch({
           type: "USER_CLICK_EMBEDDING",
