@@ -69,8 +69,9 @@ function Content({ embedding }: { embedding: Movie }) {
 
   return (
     <ul className="flex flex-col p-5 gap-3">
-      <li>ID: {embedding.imdbID}</li>
-      <li>Title: {embedding.Title}</li>
+      <a href={`https://www.imdb.com/title/${embedding.id}/`} target="_blank">
+        <li className="hover:underline">Title: {embedding.Title}</li>
+      </a>
       <li>Director: {embedding.Director}</li>
       <div className="italic font-bold">Closest Neighbors</div>
       {embedding
