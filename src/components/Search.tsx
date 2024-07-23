@@ -16,6 +16,7 @@ export function Search() {
             className="border border-black caret-black p-1"
             value={search ?? ""}
             onChange={(e) => setSearch(e.target.value)}
+            id="search"
           />
           <div className="cursor-pointer flex flex-col gap-1 mt-1">
             {results &&

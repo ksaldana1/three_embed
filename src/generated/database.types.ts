@@ -99,6 +99,16 @@ export type Database = {
         }
         Relationships: []
       }
+      movie_neighbors_all: {
+        Row: {
+          cosine_neighbor_ids: string[] | null
+          imdbID: string | null
+          l1_neighbor_ids: string[] | null
+          l2_neighbor_ids: string[] | null
+          negative_inner_product_neighbor_ids: string[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       binary_quantize:

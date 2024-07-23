@@ -7,6 +7,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     selectedId: null,
     embeddings: [],
     search: null,
+    distanceFn: "Cosine",
   });
 
   useEffect(() => {

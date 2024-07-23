@@ -5,9 +5,16 @@ export interface Embedding {
   name: string;
   umap: UMAP;
   umap_large: UMAP;
-  neighbors: Array<Embedding["id"]>;
+  neighbors: Array<EmbeddingNeighbors>;
   image_url: string;
 }
+
+export type DistanceFn = "L2" | "L1" | "Cosine" | "Inner_Product";
+
+export type EmbeddingNeighbors = {
+  distance: DistanceFn;
+  neighbors: Array<Embedding["id"]>;
+};
 
 export interface Edge {
   to: Embedding;

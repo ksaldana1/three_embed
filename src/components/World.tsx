@@ -1,8 +1,14 @@
 import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
 import { useControls } from "leva";
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Group } from "three";
-import { Controls, Embedding, SCALING_FACTOR, UMAP } from "../common/types";
+import {
+  Controls,
+  DistanceFn,
+  Embedding,
+  SCALING_FACTOR,
+  UMAP,
+} from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -14,7 +20,7 @@ export function World() {
   const bounds = useBounds();
 
   const embeddings = state.embeddings;
-  const { scale, model } = useControls({
+  const { scale, model, distanceFn } = useControls({
     scale: {
       value: SCALING_FACTOR,
       min: 0,
@@ -24,7 +30,20 @@ export function World() {
       options: ["umap", "umap_large"] as const,
       value: "umap" as const,
     },
+    distanceFn: {
+      options: [
+        "Cosine",
+        "L1",
+        "L2",
+        "Inner_Product",
+      ] as const satisfies DistanceFn[],
+      value: state.distanceFn,
+    },
   });
+
+  useEffect(() => {
+    dispatch({ type: "CHANGE_DISTANCE_FUNCTION", payload: { distanceFn } });
+  }, [distanceFn, dispatch]);
 
   const worldRef = useRef<Group>(null!);
 
@@ -36,15 +55,18 @@ export function World() {
     const currentPosition =
       selectedEmbedding?.[model].map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
-      ?.map((id) => embeddings.find((embedding) => embedding.id === id))
+      .find((n) => n.distance === distanceFn)
+      ?.neighbors?.map((id) =>
+        embeddings.find((embedding) => embedding.id === id)
+      )
       .map((embedding) => embedding?.[model].map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [scale, embeddings, selectedEmbedding, model]);
+  }, [scale, embeddings, selectedEmbedding, model, distanceFn]);
 
   useLayoutEffect(() => {
     if (worldRef.current) {
       setTimeout(() => {
-        bounds.refresh().reset();
+        bounds.refresh().clip().fit();
       }, 300);
     }
   }, [model]);
@@ -55,7 +77,9 @@ export function World() {
         const fade = !!(
           state.selectedId &&
           embedding.id !== state.selectedId &&
-          !selectedEmbedding?.neighbors.includes(embedding.id)
+          !selectedEmbedding?.neighbors
+            .find((n) => n.distance === distanceFn)
+            ?.neighbors.includes(embedding.id)
         );
 
         return (
@@ -92,16 +116,24 @@ export function World() {
 }
 
 function useKeyboard() {
+  const [isSearching, setIsSearched] = useState(false);
+  useEffect(() => {
+    const search = document.getElementById("search") as HTMLInputElement;
+    search.addEventListener("focusin", () => {
+      setIsSearched(true);
+    });
+    search.addEventListener("focusout", () => setIsSearched(false));
+  }, []);
   const { camera } = useThree();
   const forwardPressed = useKeyboardControls<Controls>(
     (state) => state.forward
   );
   const backwardsPressed = useKeyboardControls<Controls>((state) => state.back);
   useFrame(() => {
-    if (forwardPressed) {
+    if (forwardPressed && !isSearching) {
       camera.position.z -= 10;
     }
-    if (backwardsPressed) {
+    if (backwardsPressed && !isSearching) {
       camera.position.z += 10;
     }
   });

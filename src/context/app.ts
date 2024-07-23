@@ -1,12 +1,12 @@
-import { produce } from "immer";
 import { createContext, Reducer, useContext } from "react";
 import { match, P } from "ts-pattern";
-import { Embedding } from "../common/types";
+import { DistanceFn, Embedding } from "../common/types";
 
 export type AppState = {
   selectedId: Embedding["id"] | null;
   embeddings: Embedding[];
   search: [number, number, number] | null;
+  distanceFn: DistanceFn;
 };
 
 export type AppEvents =
@@ -14,9 +14,9 @@ export type AppEvents =
       type: "USER_CLICK_EMBEDDING";
       payload: { embeddingId: string | null };
     }
-  | { type: "UPDATE_NEIGHBORS"; payload: { neighbors: string[]; id: string } }
   | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
-  | { type: "SIDEBAR_CLOSED" };
+  | { type: "SIDEBAR_CLOSED" }
+  | { type: "CHANGE_DISTANCE_FUNCTION"; payload: { distanceFn: DistanceFn } };
 
 export type AppContext = {
   state: AppState;
@@ -46,15 +46,11 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
             : event.payload.embeddingId,
       } as AppState;
     })
-    .with([P.any, { type: "UPDATE_NEIGHBORS" }], ([state, event]) => {
-      if (!state.selectedId) return state;
-      return produce(state, (draftState) => {
-        const embedding = draftState.embeddings.find(
-          (e) => e.id === state?.selectedId
-        )!;
-
-        embedding.neighbors = event.payload.neighbors;
-      });
+    .with([P.any, { type: "CHANGE_DISTANCE_FUNCTION" }], ([state, event]) => {
+      return {
+        ...state,
+        distanceFn: event.payload.distanceFn,
+      };
     })
     .with([P.any, { type: "EMBEDDINGS_RECEIVED" }], ([state, event]) => {
       return {
