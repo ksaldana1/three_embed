@@ -74,21 +74,23 @@ function Content({ embedding }: { embedding: Movie }) {
       <li>Director: {embedding.Director}</li>
       <div className="italic font-bold">Closest Neighbors</div>
       {embedding
-        .neighbors!.find((n) => n.distance === state.distanceFn)
+        .neighbors!.find((n) => n.distanceFn === state.distanceFn)
         ?.neighbors.map((n) => (
           <li
-            key={n}
-            className="underline cursor-pointer"
+            key={n.id}
             onClick={() => {
               dispatch({
                 type: "USER_CLICK_EMBEDDING",
                 payload: {
-                  embeddingId: n,
+                  embeddingId: n.id,
                 },
               });
             }}
           >
-            {state.embeddings.find((e) => e.id === n)?.name}
+            <span className="cursor-pointer underline">
+              {state.embeddings.find((e) => e.id === n.id)?.name}
+            </span>
+            <span className="ms-4">{n.distance.toFixed(4)}</span>
           </li>
         ))}
     </ul>

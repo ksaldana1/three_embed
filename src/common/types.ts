@@ -12,8 +12,11 @@ export interface Embedding {
 export type DistanceFn = "L2" | "L1" | "Cosine" | "Inner_Product";
 
 export type EmbeddingNeighbors = {
-  distance: DistanceFn;
-  neighbors: Array<Embedding["id"]>;
+  distanceFn: DistanceFn;
+  neighbors: Array<{
+    id: Embedding["id"];
+    distance: number;
+  }>;
 };
 
 export interface Edge {

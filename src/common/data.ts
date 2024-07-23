@@ -1,3 +1,4 @@
+import { Json } from "../generated/database.types";
 import { client } from "./client";
 import { DistanceFn, Embedding, EmbeddingNeighbors, UMAP } from "./types";
 
@@ -7,29 +8,30 @@ export const generateEmbeddings: () => Promise<Embedding[]> = async () => {
     .select("imdbID, umap, Poster, Title, Director, umap_large");
 
   const { data: neighborData } = await client
-    .from("movie_neighbors_all")
+    .from("movie_neighbors_all_distances")
     .select("*");
 
   const neighbors = neighborData!.map((row) => {
     return [
       {
-        distance: "Cosine" satisfies DistanceFn,
-        neighbors: row.cosine_neighbor_ids!,
+        distanceFn: "Cosine" satisfies DistanceFn,
+        neighbors: fromJSON(row.cosine_neighbors),
       },
       {
-        distance: "L1" as const satisfies DistanceFn,
-        neighbors: row.l1_neighbor_ids!,
+        distanceFn: "L1" as const satisfies DistanceFn,
+        neighbors: fromJSON(row.l1_neighbors),
       },
       {
-        distance: "L2" satisfies DistanceFn,
-        neighbors: row.l2_neighbor_ids!,
+        distanceFn: "L2" satisfies DistanceFn,
+        neighbors: fromJSON(row.l2_neighbors),
       },
       {
-        distance: "Inner_Product" satisfies DistanceFn,
-        neighbors: row.l1_neighbor_ids!,
+        distanceFn: "Inner_Product" satisfies DistanceFn,
+        neighbors: fromJSON(row.negative_inner_product_neighbors),
       },
     ] satisfies EmbeddingNeighbors[];
   });
+
   const resp: Embedding[] = data!.map((movie, index) => ({
     ...movie,
     id: movie.imdbID,
@@ -43,3 +45,13 @@ export const generateEmbeddings: () => Promise<Embedding[]> = async () => {
   }));
   return resp;
 };
+
+function fromJSON(x: Json): EmbeddingNeighbors["neighbors"] {
+  if (typeof x !== "object") {
+    throw new Error("JSON must be object");
+  }
+  if (typeof x !== "object" && !x["id"] && !x["distance"]) {
+    throw new Error("MISSING ID AND NEIGHBORS from data");
+  }
+  return x as EmbeddingNeighbors["neighbors"];
+}

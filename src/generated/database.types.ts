@@ -109,6 +109,16 @@ export type Database = {
         }
         Relationships: []
       }
+      movie_neighbors_all_distances: {
+        Row: {
+          cosine_neighbors: Json[] | null
+          imdbID: string | null
+          l1_neighbors: Json[] | null
+          l2_neighbors: Json[] | null
+          negative_inner_product_neighbors: Json[] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       binary_quantize:

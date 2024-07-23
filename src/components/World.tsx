@@ -55,9 +55,9 @@ export function World() {
     const currentPosition =
       selectedEmbedding?.[model].map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
-      .find((n) => n.distance === distanceFn)
-      ?.neighbors?.map((id) =>
-        embeddings.find((embedding) => embedding.id === id)
+      .find((n) => n.distanceFn === distanceFn)
+      ?.neighbors?.map((neighbor) =>
+        embeddings.find((embedding) => embedding.id === neighbor.id)
       )
       .map((embedding) => embedding?.[model].map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
@@ -78,8 +78,9 @@ export function World() {
           state.selectedId &&
           embedding.id !== state.selectedId &&
           !selectedEmbedding?.neighbors
-            .find((n) => n.distance === distanceFn)
-            ?.neighbors.includes(embedding.id)
+            .find((n) => n.distanceFn === distanceFn)
+            ?.neighbors.map((n) => n.id)
+            .includes(embedding.id)
         );
 
         return (
