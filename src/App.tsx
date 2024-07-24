@@ -139,7 +139,7 @@ function Link({ href }: { href: string }) {
 
 function Item({ item, label }: { item: string; label: React.ReactNode }) {
   return (
-    <div className="mb-4 flex items-center gap-4 select-none pointer-events-none">
+    <div className="mb-4 flex items-center gap-4 select-none">
       <label className="text-gray-400 text-sm mb-1 w-36">{label}</label>
       <div className="w-full bg-gray-700 text-white p-2 rounded">{item}</div>
     </div>
