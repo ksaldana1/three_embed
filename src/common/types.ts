@@ -48,3 +48,7 @@ export enum Controls {
   right = "right",
   jump = "jump",
 }
+
+export type EmbeddingModel =
+  | "text-embedding-3-small"
+  | "text-embedding-3-large";
