@@ -17,10 +17,10 @@ export function Search() {
           'ui-monospace, SFMono-Regular, Menlo, "Roboto Mono", monospace',
       }}
     >
-      <TextField className="flex gap-2 ml-3 mt-2">
+      <TextField className="flex gap-2 mx-3 mt-2 mb-1">
         <div>
           <Input
-            placeholder="Search"
+            placeholder="Search..."
             className="border border-black caret-white p-1 bg-gray-700 capitalize mb-2"
             value={search ?? ""}
             onChange={(e) => setSearch(e.target.value)}
@@ -72,7 +72,7 @@ function useFuse(search: string | null) {
   const { state } = useAppContext();
   const fuse = useMemo(() => {
     return new Fuse(state.embeddings, {
-      keys: ["name"],
+      keys: ["name", "id"],
       includeScore: true,
       threshold: 0.2,
       ignoreLocation: true,
