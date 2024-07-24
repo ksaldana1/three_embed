@@ -6,6 +6,7 @@ import {
   Controls,
   DistanceFn,
   Embedding,
+  EmbeddingModel,
   SCALING_FACTOR,
   UMAP,
 } from "../common/types";
@@ -27,8 +28,11 @@ export function World() {
       step: 1,
     },
     model: {
-      options: ["umap", "umap_large"] as const,
-      value: "umap" as const,
+      options: [
+        "text-embedding-3-small",
+        "text-embedding-3-large",
+      ] as const satisfies EmbeddingModel[],
+      value: "text-embedding-3-small" as const satisfies EmbeddingModel,
     },
     distanceFn: {
       options: [
@@ -40,6 +44,9 @@ export function World() {
       value: state.distanceFn,
     },
   });
+
+  const modelToField =
+    model === "text-embedding-3-small" ? "umap" : "umap_large";
 
   useEffect(() => {
     dispatch({ type: "CHANGE_DISTANCE_FUNCTION", payload: { distanceFn } });
@@ -53,15 +60,17 @@ export function World() {
 
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition =
-      selectedEmbedding?.[model].map((x) => x * scale) ?? [];
+      selectedEmbedding?.[modelToField].map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
       .find((n) => n.distanceFn === distanceFn)
       ?.neighbors?.map((neighbor) =>
         embeddings.find((embedding) => embedding.id === neighbor.id)
       )
-      .map((embedding) => embedding?.[model].map((v) => v * scale) ?? []);
+      .map(
+        (embedding) => embedding?.[modelToField].map((v) => v * scale) ?? []
+      );
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [scale, embeddings, selectedEmbedding, model, distanceFn]);
+  }, [scale, embeddings, selectedEmbedding, modelToField, distanceFn]);
 
   useLayoutEffect(() => {
     if (worldRef.current) {
@@ -69,7 +78,7 @@ export function World() {
         bounds.refresh().clip().fit();
       }, 300);
     }
-  }, [model]);
+  }, [modelToField]);
 
   return (
     <group ref={worldRef}>
@@ -97,7 +106,7 @@ export function World() {
             key={embedding.id}
             scale={scale}
             fade={fade}
-            umap={model}
+            umap={modelToField}
           />
         );
       })}
