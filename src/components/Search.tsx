@@ -1,7 +1,7 @@
-import Fuse, { FuseResult } from "fuse.js";
 import clsx from "clsx";
+import Fuse, { FuseResult } from "fuse.js";
 import { useMemo, useState } from "react";
-import { Input, Label, TextField } from "react-aria-components";
+import { Input, TextField } from "react-aria-components";
 import { Embedding } from "../common/types";
 import { useAppContext } from "../context/app";
 

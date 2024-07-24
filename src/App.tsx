@@ -45,7 +45,7 @@ function Sidebar() {
     <animated.div
       style={{ minHeight }}
       className={clsx(
-        "absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800"
+        "absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800 opacity-90"
       )}
     >
       {isOpen && !!state.selectedId && showContent ? (
