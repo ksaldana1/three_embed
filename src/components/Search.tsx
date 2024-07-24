@@ -8,12 +8,18 @@ export function Search() {
   const [search, setSearch] = useState<string | null>(null);
   const results = useFuse(search ?? null);
   return (
-    <div className="absolute z-10">
+    <div
+      className="absolute z-10 bg-gray-800 text-gray-400 mt-2 rounded-lg p-2 ms-2 pr-4 flex justify-center"
+      style={{
+        fontFamily:
+          'ui-monospace, SFMono-Regular, Menlo, "Roboto Mono", monospace',
+      }}
+    >
       <TextField className="flex gap-2 ml-3 mt-2">
-        <Label className="mt-1">Movie</Label>
+        <Label className="mt-1">Search</Label>
         <div>
           <Input
-            className="border border-black caret-black p-1"
+            className="border border-black caret-white p-1 bg-gray-700"
             value={search ?? ""}
             onChange={(e) => setSearch(e.target.value)}
             id="search"
