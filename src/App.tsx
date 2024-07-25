@@ -8,6 +8,7 @@ import { Scene } from "./components/Scene";
 import { Search } from "./components/Search";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
+import { Stars } from "@react-three/drei";
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
         <Search />
         <div className="flex h-full w-full overflow-hidden items-center">
           <div className="flex w-full h-full">
-            <Canvas className="w-full h-full">
+            <Canvas className="w-full h-full bg-black">
+              <Stars
+                radius={10000}
+                depth={50}
+                count={10000}
+                factor={1}
+                saturation={1}
+              />
               <Scene />
             </Canvas>
           </div>

@@ -18,7 +18,7 @@ export type EmbeddingNeighbors = {
   }>;
 };
 
-export const SCALING_FACTOR = 200;
+export const SCALING_FACTOR = 400;
 
 export enum Controls {
   forward = "forward",

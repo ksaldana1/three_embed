@@ -70,11 +70,10 @@ export function World({ center }: { center: () => void }) {
       {neighborPositions?.map((neighborPosition, index) => {
         return (
           <Line
-            dashed
             key={`${state.selectedId}-${index}`}
             points={[currentPosition, neighborPosition]}
-            color="black"
-            lineWidth={1}
+            color="white"
+            lineWidth={2}
           />
         );
       })}
