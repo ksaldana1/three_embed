@@ -2,7 +2,7 @@ import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { button, useControls } from "leva";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Group } from "three";
+import { Group, Vector3 } from "three";
 import {
   Controls,
   DistanceFn,
@@ -145,12 +145,19 @@ function useKeyboard() {
     (state) => state.forward
   );
   const backwardsPressed = useKeyboardControls<Controls>((state) => state.back);
+  const V3 = useMemo(() => {
+    return new Vector3();
+  }, []);
+
+  const SPEED = 10;
+
   useFrame(() => {
+    const direction = camera.getWorldDirection(V3);
     if (forwardPressed && !isSearching) {
-      camera.position.z -= 10;
+      camera.position.add(direction.multiplyScalar(SPEED));
     }
     if (backwardsPressed && !isSearching) {
-      camera.position.z += 10;
+      camera.position.sub(direction.multiplyScalar(SPEED));
     }
   });
 }
