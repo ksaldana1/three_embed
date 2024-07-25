@@ -8,7 +8,7 @@ import { useAppContext } from "../context/app";
 export function Search() {
   const [search, setSearch] = useState<string | null>(null);
   const results = useFuse(search ?? null);
-  const showResults = results && results.length && results.length <= 3;
+  const showResults = results && results.length && search && search.length >= 3;
   return (
     <div
       className="absolute z-10 bg-gray-800 text-gray-400 my-2 rounded-lg p-2 ms-2 pr-4 flex justify-center"
@@ -36,9 +36,11 @@ export function Search() {
             )}
           >
             {showResults &&
-              results.map((result) => (
-                <Result result={result} setSearch={() => setSearch(null)} />
-              ))}
+              results
+                .slice(0, 3)
+                .map((result) => (
+                  <Result result={result} setSearch={() => setSearch(null)} />
+                ))}
           </div>
         </div>
       </TextField>
