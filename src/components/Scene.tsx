@@ -36,12 +36,10 @@ export function Scene() {
     <KeyboardControls map={map}>
       <Stage
         center={{
-          onCentered: (p) => console.log("on centered", p),
           cacheKey: seed.toString(),
         }}
-        adjustCamera
       >
-        <OrbitControls />
+        <OrbitControls makeDefault />
         <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
           <GizmoViewport labelColor="white" axisHeadScale={1} />
         </GizmoHelper>
