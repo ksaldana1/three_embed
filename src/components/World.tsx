@@ -1,6 +1,7 @@
 import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
-import { useControls } from "leva";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import { button, useControls } from "leva";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Group } from "three";
 import {
   Controls,
@@ -12,45 +13,13 @@ import {
 } from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
-import { useFrame, useThree } from "@react-three/fiber";
 
 export function World() {
   const { state, dispatch } = useAppContext();
+  const { scale, distanceFn } = useDebugControls();
   useKeyboard();
 
-  const bounds = useBounds();
-
   const embeddings = state.embeddings;
-  const { scale, model, distanceFn } = useControls({
-    scale: {
-      value: SCALING_FACTOR,
-      min: 0,
-      step: 1,
-    },
-    model: {
-      options: [
-        "text-embedding-3-small",
-        "text-embedding-3-large",
-      ] as const satisfies EmbeddingModel[],
-      value: "text-embedding-3-small" as const satisfies EmbeddingModel,
-    },
-    distanceFn: {
-      options: [
-        "Cosine",
-        "L1",
-        "L2",
-        "Inner_Product",
-      ] as const satisfies DistanceFn[],
-      value: state.distanceFn,
-    },
-  });
-
-  const modelToField =
-    model === "text-embedding-3-small" ? "umap" : "umap_large";
-
-  useEffect(() => {
-    dispatch({ type: "CHANGE_DISTANCE_FUNCTION", payload: { distanceFn } });
-  }, [distanceFn, dispatch]);
 
   const worldRef = useRef<Group>(null!);
 
@@ -59,26 +28,15 @@ export function World() {
   }, [state.embeddings, state.selectedId]);
 
   const [currentPosition, neighborPositions] = useMemo(() => {
-    const currentPosition =
-      selectedEmbedding?.[modelToField].map((x) => x * scale) ?? [];
+    const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
       .find((n) => n.distanceFn === distanceFn)
       ?.neighbors?.map((neighbor) =>
         embeddings.find((embedding) => embedding.id === neighbor.id)
       )
-      .map(
-        (embedding) => embedding?.[modelToField].map((v) => v * scale) ?? []
-      );
+      .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [scale, embeddings, selectedEmbedding, modelToField, distanceFn]);
-
-  useLayoutEffect(() => {
-    if (worldRef.current) {
-      setTimeout(() => {
-        bounds.refresh().clip().fit();
-      }, 300);
-    }
-  }, [modelToField]);
+  }, [scale, embeddings, selectedEmbedding, distanceFn]);
 
   return (
     <group ref={worldRef}>
@@ -106,7 +64,6 @@ export function World() {
             key={embedding.id}
             scale={scale}
             fade={fade}
-            umap={modelToField}
           />
         );
       })}
@@ -123,6 +80,54 @@ export function World() {
       })}
     </group>
   );
+}
+
+function useDebugControls() {
+  const { state, dispatch } = useAppContext();
+  const bounds = useBounds();
+  const controls = useControls({
+    scale: {
+      value: SCALING_FACTOR,
+      min: 0,
+      step: 1,
+    },
+    model: {
+      options: [
+        "text-embedding-3-small",
+        "text-embedding-3-large",
+        "nomic-embed-text-v1.5",
+      ] as const satisfies EmbeddingModel[],
+      value: state.model,
+    },
+    distanceFn: {
+      options: [
+        "Cosine",
+        "L1",
+        "L2",
+        "Inner_Product",
+      ] as const satisfies DistanceFn[],
+      value: state.distanceFn,
+    },
+    center: button(() => bounds.refresh().clip().fit()),
+  });
+
+  // need to keep in sync with top level state
+  // kinda annoying but this debug menu is very useful
+  useEffect(() => {
+    dispatch({
+      type: "CHANGE_DISTANCE_FUNCTION",
+      payload: { distanceFn: controls.distanceFn },
+    });
+  }, [controls.distanceFn, dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      type: "EMBEDDING_MODEL_CHANGED",
+      payload: { model: controls.model },
+    });
+  }, [controls.model, dispatch]);
+
+  return controls;
 }
 
 function useKeyboard() {

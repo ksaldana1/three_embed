@@ -4,7 +4,6 @@ export interface Embedding {
   id: string;
   name: string;
   umap: UMAP;
-  umap_large: UMAP;
   neighbors: Array<EmbeddingNeighbors>;
   image_url: string;
 }
@@ -50,5 +49,6 @@ export enum Controls {
 }
 
 export type EmbeddingModel =
+  | "nomic-embed-text-v1.5"
   | "text-embedding-3-small"
   | "text-embedding-3-large";

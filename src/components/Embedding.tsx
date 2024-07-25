@@ -9,29 +9,21 @@ interface EmbeddingProps {
   onClick: (embedding: Embedding | null) => void;
   scale?: number;
   fade?: boolean;
-  umap: "umap" | "umap_large";
 }
 
-export function Embed({
-  embedding,
-  onClick,
-  scale,
-  fade,
-  umap,
-}: EmbeddingProps) {
+export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   const texture = useTexture(embedding.image_url);
   const ref = useRef<Mesh>(null!);
   const scaleOrDefault = scale ?? SCALING_FACTOR;
 
   const position = useMemo(() => {
-    const [x, y, z] =
-      umap === "umap_large" ? embedding.umap_large : embedding.umap;
+    const [x, y, z] = embedding.umap;
     return [
       x * scaleOrDefault,
       y * scaleOrDefault,
       z * scaleOrDefault,
     ] as const;
-  }, [umap, embedding.umap, embedding.umap_large, scaleOrDefault]);
+  }, [embedding.umap, scaleOrDefault]);
 
   const { opacity } = useSpring({ opacity: fade ? 0.05 : 1 });
   const { position: embeddingPosition } = useSpring({
