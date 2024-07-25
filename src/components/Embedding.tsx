@@ -33,7 +33,8 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   return (
     <animated.mesh
       ref={ref}
-      onDoubleClick={() => {
+      onDoubleClick={(e) => {
+        e.stopPropagation();
         onClick(embedding);
       }}
       position={embeddingPosition}
