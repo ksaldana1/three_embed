@@ -20,6 +20,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.44.4
         version: 2.44.4
+      '@tanstack/react-query':
+        specifier: ^5.51.11
+        version: 5.51.11(react@18.3.1)
       '@types/three':
         specifier: ^0.166.0
         version: 0.166.0
@@ -2193,6 +2196,14 @@ packages:
 
   '@swc/helpers@0.5.12':
     resolution: {integrity: sha512-KMZNXiGibsW9kvZAO1Pam2JPTDBm+KSHMMHWdsyI/1DbIZjT2A6Gy3hblVXUMEDvUAKq+e0vL0X0o54owWji7g==}
+
+  '@tanstack/query-core@5.51.9':
+    resolution: {integrity: sha512-HsAwaY5J19MD18ykZDS3aVVh+bAt0i7m6uQlFC2b77DLV9djo+xEN7MWQAQQTR8IM+7r/zbozTQ7P0xr0bHuew==}
+
+  '@tanstack/react-query@5.51.11':
+    resolution: {integrity: sha512-4Kq2x0XpDlpvSnaLG+8pHNH60zEc3mBvb3B2tOMDjcPCi/o+Du3p/9qpPLwJOTliVxxPJAP27fuIhLrsRdCr7A==}
+    peerDependencies:
+      react: ^18.0.0
 
   '@tweenjs/tween.js@23.1.2':
     resolution: {integrity: sha512-kMCNaZCJugWI86xiEHaY338CU5JpD0B97p1j1IKNn/Zto8PgACjQx0UxbHjmOcLl/dDOBnItwD07KmCs75pxtQ==}
@@ -7623,6 +7634,13 @@ snapshots:
   '@swc/helpers@0.5.12':
     dependencies:
       tslib: 2.6.3
+
+  '@tanstack/query-core@5.51.9': {}
+
+  '@tanstack/react-query@5.51.11(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.51.9
+      react: 18.3.1
 
   '@tweenjs/tween.js@23.1.2': {}
 

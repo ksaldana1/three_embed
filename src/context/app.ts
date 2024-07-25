@@ -36,7 +36,6 @@ export const useAppContext = () => {
 };
 
 export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
-  console.log(event);
   return match([state, event])
     .returnType<AppState>()
     .with([P.any, { type: "USER_CLICK_EMBEDDING" }], ([state, event]) => {

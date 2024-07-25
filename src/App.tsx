@@ -1,26 +1,30 @@
 import { Canvas } from "@react-three/fiber";
+import { QueryClientProvider } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { animated, useSpring, config } from "react-spring";
+import { animated, config, useSpring } from "react-spring";
+import QueryClient from "./common/query";
 import { Embedding } from "./common/types";
 import { Scene } from "./components/Scene";
+import { Search } from "./components/Search";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
-import { Search } from "./components/Search";
 
 function App() {
   return (
-    <AppProvider>
-      <Search />
-      <div className="flex h-full w-full overflow-hidden items-center">
-        <div className="flex w-full h-full">
-          <Canvas className="w-full h-full">
-            <Scene />
-          </Canvas>
+    <QueryClientProvider client={QueryClient}>
+      <AppProvider>
+        <Search />
+        <div className="flex h-full w-full overflow-hidden items-center">
+          <div className="flex w-full h-full">
+            <Canvas className="w-full h-full">
+              <Scene />
+            </Canvas>
+          </div>
+          <Sidebar />
         </div>
-        <Sidebar />
-      </div>
-    </AppProvider>
+      </AppProvider>
+    </QueryClientProvider>
   );
 }
 

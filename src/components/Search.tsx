@@ -17,9 +17,10 @@ export function Search() {
           'ui-monospace, SFMono-Regular, Menlo, "Roboto Mono", monospace',
       }}
     >
-      <TextField className="flex gap-2 mx-3 mt-2 mb-1">
+      <TextField aria-label="search" className="flex gap-2 mx-3 mt-2 mb-1">
         <div>
           <Input
+            aria-label="search_input"
             autoComplete="off"
             placeholder="Search..."
             className="border border-black caret-white p-1 bg-gray-700 capitalize mb-2"
