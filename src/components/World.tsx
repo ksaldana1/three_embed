@@ -1,4 +1,4 @@
-import { Line, useBounds, useKeyboardControls } from "@react-three/drei";
+import { Line, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { button, useControls } from "leva";
 import { useEffect, useMemo, useRef, useState } from "react";
