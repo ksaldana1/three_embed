@@ -1,4 +1,5 @@
 import { Line, useKeyboardControls } from "@react-three/drei";
+import { throttle } from "lodash";
 import { useFrame, useThree } from "@react-three/fiber";
 import { button, useControls } from "leva";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -154,12 +155,10 @@ function useKeyboard() {
   useFrame(() => {
     const direction = camera.getWorldDirection(V3);
     if (forwardPressed && !isSearching) {
-      const fn = camera.position.x > 0 ? "sub" : "add";
-      camera.position[fn](direction.multiplyScalar(SPEED));
+      camera.position.add(direction.multiplyScalar(SPEED));
     }
     if (backwardsPressed && !isSearching) {
-      const fn = camera.position.x > 0 ? "add" : "sub";
-      camera.position[fn](direction.multiplyScalar(SPEED));
+      camera.position.sub(direction.multiplyScalar(SPEED));
     }
   });
 }
