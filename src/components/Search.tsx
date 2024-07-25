@@ -20,6 +20,7 @@ export function Search() {
       <TextField className="flex gap-2 mx-3 mt-2 mb-1">
         <div>
           <Input
+            autoComplete="off"
             placeholder="Search..."
             className="border border-black caret-white p-1 bg-gray-700 capitalize mb-2"
             value={search ?? ""}
