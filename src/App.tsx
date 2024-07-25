@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import { QueryClientProvider } from "@tanstack/react-query";
-import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { animated, config, useSpring } from "react-spring";
 import QueryClient from "./common/query";
@@ -48,9 +47,7 @@ function Sidebar() {
   return (
     <animated.div
       style={{ minHeight }}
-      className={clsx(
-        "absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800 opacity-90"
-      )}
+      className="absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800 opacity-90"
     >
       {isOpen && !!state.selectedId && showContent ? (
         <Content embedding={selectedEmbedding as Movie} />
