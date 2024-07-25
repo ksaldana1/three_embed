@@ -154,10 +154,12 @@ function useKeyboard() {
   useFrame(() => {
     const direction = camera.getWorldDirection(V3);
     if (forwardPressed && !isSearching) {
-      camera.position.add(direction.multiplyScalar(SPEED));
+      const fn = camera.position.x > 0 ? "sub" : "add";
+      camera.position[fn](direction.multiplyScalar(SPEED));
     }
     if (backwardsPressed && !isSearching) {
-      camera.position.sub(direction.multiplyScalar(SPEED));
+      const fn = camera.position.x > 0 ? "add" : "sub";
+      camera.position[fn](direction.multiplyScalar(SPEED));
     }
   });
 }
