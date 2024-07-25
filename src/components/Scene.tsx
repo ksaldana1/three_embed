@@ -36,7 +36,6 @@ export function Scene() {
     <KeyboardControls map={map}>
       <Stage
         center={{
-          onCentered: (p) => console.log("on centered", p),
           cacheKey: seed.toString(),
         }}
         adjustCamera
