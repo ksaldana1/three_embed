@@ -2,7 +2,7 @@ import { animated, useSpring } from "@react-spring/three";
 import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
-import { Embedding, SCALING_FACTOR, UMAP } from "../common/types";
+import { Embedding, SCALING_FACTOR } from "../common/types";
 import { useAppContext } from "../context/app";
 
 interface EmbeddingProps {
@@ -32,7 +32,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     position,
   });
   const { localScale } = useSpring({
-    localScale: state.selectedId && !fade ? 2 : 1,
+    localScale: state.selectedId && !fade ? 3 : 1,
   });
 
   return (
