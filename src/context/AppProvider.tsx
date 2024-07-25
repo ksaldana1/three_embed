@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useReducer } from "react";
-import { generateEmbeddings } from "../common/data";
+import { fetchEmbeddings } from "../common/data";
 import { appReducer, Context } from "./app";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
@@ -8,13 +8,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     embeddings: [],
     search: null,
     distanceFn: "Cosine",
+    model: "text-embedding-3-small",
   });
 
   useEffect(() => {
-    generateEmbeddings().then((embeddings) => {
+    fetchEmbeddings(state.model).then((embeddings) => {
       dispatch({ type: "EMBEDDINGS_RECEIVED", payload: { embeddings } });
     });
-  }, []);
+  }, [state.model]);
 
   const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
