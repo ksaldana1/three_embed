@@ -96,6 +96,7 @@ function useDebugControls() {
         "text-embedding-3-small",
         "text-embedding-3-large",
         "nomic-embed-text-v1.5",
+        "mxbai-embed-large",
       ] as const satisfies EmbeddingModel[],
       value: state.model,
     },

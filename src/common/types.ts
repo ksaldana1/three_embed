@@ -31,4 +31,5 @@ export enum Controls {
 export type EmbeddingModel =
   | "nomic-embed-text-v1.5"
   | "text-embedding-3-small"
-  | "text-embedding-3-large";
+  | "text-embedding-3-large"
+  | "mxbai-embed-large";
