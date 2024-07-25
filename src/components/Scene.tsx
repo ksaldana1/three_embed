@@ -7,7 +7,7 @@ import {
   OrbitControls,
   Stage,
 } from "@react-three/drei";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { World } from "./World";
 
 import { useAppContext } from "../context/app";
@@ -15,6 +15,8 @@ import { Controls } from "../common/types";
 
 export function Scene() {
   const { state } = useAppContext();
+  // random seed for center functionality
+  const [seed, setSeed] = useState(Math.random());
   const map = useMemo<KeyboardControlsEntry<Controls>[]>(
     () => [
       { name: Controls.forward, keys: ["ArrowUp", "KeyW"] },
@@ -29,15 +31,22 @@ export function Scene() {
   if (!state.embeddings?.length) {
     return null;
   }
+
   return (
     <KeyboardControls map={map}>
-      <Stage adjustCamera>
+      <Stage
+        center={{
+          onCentered: (p) => console.log("on centered", p),
+          cacheKey: seed.toString(),
+        }}
+        adjustCamera
+      >
         <OrbitControls makeDefault />
         <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
           <GizmoViewport labelColor="white" axisHeadScale={1} />
         </GizmoHelper>
         <DragControls>
-          <World />
+          <World center={() => setSeed(Math.random())} />
         </DragControls>
       </Stage>
     </KeyboardControls>

@@ -14,9 +14,9 @@ import {
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 
-export function World() {
+export function World({ center }: { center: () => void }) {
   const { state, dispatch } = useAppContext();
-  const { scale, distanceFn } = useDebugControls();
+  const { scale, distanceFn } = useDebugControls({ center });
   useKeyboard();
 
   const embeddings = state.embeddings;
@@ -82,9 +82,9 @@ export function World() {
   );
 }
 
-function useDebugControls() {
+function useDebugControls({ center }: { center: () => void }) {
   const { state, dispatch } = useAppContext();
-  const bounds = useBounds();
+  // const bounds = useBounds();
   const controls = useControls({
     scale: {
       value: SCALING_FACTOR,
@@ -109,7 +109,7 @@ function useDebugControls() {
       ] as const satisfies DistanceFn[],
       value: state.distanceFn,
     },
-    center: button(() => bounds.refresh().clip().fit()),
+    center: button(() => center()),
   });
 
   // need to keep in sync with top level state
