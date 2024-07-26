@@ -39,7 +39,11 @@ export function Search() {
               results
                 .slice(0, 3)
                 .map((result) => (
-                  <Result result={result} setSearch={() => setSearch(null)} />
+                  <Result
+                    key={result.item.id}
+                    result={result}
+                    setSearch={() => setSearch(null)}
+                  />
                 ))}
           </div>
         </div>
