@@ -27,6 +27,10 @@ export function World({ center }: { center: () => void }) {
     return state.embeddings.find((e) => e.id === state?.selectedId);
   }, [state.embeddings, state.selectedId]);
 
+  const hoveredEmbedding = useMemo(() => {
+    return state.embeddings.find((e) => e.id === state?.hovered);
+  }, [state.embeddings, state.hovered]);
+
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
@@ -67,16 +71,28 @@ export function World({ center }: { center: () => void }) {
           />
         );
       })}
-      {neighborPositions?.map((neighborPosition, index) => {
-        return (
-          <Line
-            key={`${state.selectedId}-${index}`}
-            points={[currentPosition, neighborPosition]}
-            color="white"
-            lineWidth={2}
-          />
-        );
-      })}
+      {hoveredEmbedding && (
+        <Line
+          key={`${state.selectedId}-hovered`}
+          points={[
+            currentPosition,
+            hoveredEmbedding.umap.map((x) => x * scale) as UMAP,
+          ]}
+          color="white"
+          lineWidth={2}
+        />
+      )}
+      {!hoveredEmbedding &&
+        neighborPositions?.map((neighborPosition, index) => {
+          return (
+            <Line
+              key={`${state.selectedId}-${index}`}
+              points={[currentPosition, neighborPosition]}
+              color="white"
+              lineWidth={2}
+            />
+          );
+        })}
     </group>
   );
 }

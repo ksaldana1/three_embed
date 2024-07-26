@@ -11,6 +11,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     search: null,
     distanceFn: "Cosine",
     model: "text-embedding-3-small",
+    hovered: null,
   });
 
   const { data } = useQuery({
