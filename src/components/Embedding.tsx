@@ -16,7 +16,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   const texture = useTexture(embedding.image_url);
   const ref = useRef<Mesh>(null!);
   const scaleOrDefault = scale ?? SCALING_FACTOR;
-  const { state } = useAppContext();
+  const { state, dispatch } = useAppContext();
 
   const position = useMemo(() => {
     const [x, y, z] = embedding.umap;
@@ -27,7 +27,10 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     ] as const;
   }, [embedding.umap, scaleOrDefault]);
 
-  const { opacity } = useSpring({ opacity: fade ? 0.02 : 1 });
+  const { opacity } = useSpring({
+    opacity:
+      fade || (!!state.hovered && state.hovered !== embedding.id) ? 0.02 : 1,
+  });
   const { position: embeddingPosition } = useSpring({
     position,
   });

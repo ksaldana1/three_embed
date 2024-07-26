@@ -118,7 +118,21 @@ function Content({ embedding }: { embedding: Movie }) {
               });
             }}
           >
-            <div className="cursor-pointer underline text-gray-400">
+            <div
+              onPointerEnter={() => {
+                dispatch({
+                  type: "NEIGHBOR_HOVER_EVENT",
+                  payload: { embeddingId: n.id },
+                });
+              }}
+              onPointerLeave={() => {
+                dispatch({
+                  type: "NEIGHBOR_HOVER_EVENT",
+                  payload: { embeddingId: null },
+                });
+              }}
+              className="cursor-pointer underline text-gray-400"
+            >
               {state.embeddings.find((e) => e.id === n.id)?.name}
             </div>
             <div className="ms-4 text-gray-400">{n.distance.toFixed(4)}</div>

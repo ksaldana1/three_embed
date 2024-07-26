@@ -8,6 +8,7 @@ export type AppState = {
   search: [number, number, number] | null;
   distanceFn: DistanceFn;
   model: EmbeddingModel;
+  hovered: Embedding["id"] | null;
 };
 
 export type AppEvents =
@@ -18,7 +19,8 @@ export type AppEvents =
   | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
   | { type: "SIDEBAR_CLOSED" }
   | { type: "CHANGE_DISTANCE_FUNCTION"; payload: { distanceFn: DistanceFn } }
-  | { type: "EMBEDDING_MODEL_CHANGED"; payload: { model: EmbeddingModel } };
+  | { type: "EMBEDDING_MODEL_CHANGED"; payload: { model: EmbeddingModel } }
+  | { type: "NEIGHBOR_HOVER_EVENT"; payload: { embeddingId: string | null } };
 
 export type AppContext = {
   state: AppState;
@@ -71,5 +73,12 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
         model: event.payload.model,
       };
     })
+    .with([P.any, { type: "NEIGHBOR_HOVER_EVENT" }], ([state, event]) => {
+      return {
+        ...state,
+        hovered: event.payload.embeddingId,
+      };
+    })
+
     .exhaustive();
 };
