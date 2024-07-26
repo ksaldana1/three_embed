@@ -31,7 +31,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     opacity:
       fade || (!!state.hovered && state.hovered !== embedding.id)
         ? embedding.id === state.selectedId
-          ? 0.1
+          ? 0.3
           : 0.02
         : 1,
   });
