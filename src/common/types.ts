@@ -3,6 +3,7 @@ export type UMAP = [number, number, number];
 export interface Embedding {
   id: string;
   name: string;
+  director: string;
   umap: UMAP;
   neighbors: Array<EmbeddingNeighbors>;
   image_url: string;

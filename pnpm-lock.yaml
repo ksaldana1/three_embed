@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@elysiajs/eden':
+        specifier: ^1.1.2
+        version: 1.1.2(elysia@1.1.4(@sinclair/typebox@0.27.8)(typescript@5.5.3))
       '@react-spring/three':
         specifier: ^9.7.3
         version: 9.7.3(@react-three/fiber@8.16.8(react-dom@18.3.1(react@18.3.1))(react-native@0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(@types/react@18.3.3)(react@18.3.1))(react@18.3.1)(three@0.166.1))(react@18.3.1)(three@0.166.1)
@@ -26,6 +29,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      elysia:
+        specifier: ^1.1.4
+        version: 1.1.4(@sinclair/typebox@0.27.8)(typescript@5.5.3)
       fuse.js:
         specifier: ^7.0.0
         version: 7.0.0
@@ -840,6 +846,11 @@ packages:
   '@babel/types@7.24.9':
     resolution: {integrity: sha512-xm8XrMKz0IlUdocVbYJe0Z9xEgidU7msskG8BbhnTPK/HZ2z/7FP7ykqPgrUH+C+r414mNfNWam1f2vqOjqjYQ==}
     engines: {node: '>=6.9.0'}
+
+  '@elysiajs/eden@1.1.2':
+    resolution: {integrity: sha512-SNMW+7oN97POOq2r5rXBYXa9dBbqIcSVZ+0fFL0KnMmD3OKfhjuXzbGeeimRCMDVQr/ANvdvbqkQ+fJx1xOEjg==}
+    peerDependencies:
+      elysia: '>= 1.1.0'
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -2713,6 +2724,10 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
+  cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
+    engines: {node: '>= 0.6'}
+
   core-js-compat@3.37.1:
     resolution: {integrity: sha512-9TNiImhKvQqSUkOvk/mMRZzOANTiEVC7WaBNhHcKM7x+/5E1l5NvsysR19zuDQScE8k+kfQXWRN3AtS/eOSHpg==}
 
@@ -2824,6 +2839,18 @@ packages:
 
   electron-to-chromium@1.4.829:
     resolution: {integrity: sha512-5qp1N2POAfW0u1qGAxXEtz6P7bO1m6gpZr5hdf5ve6lxpLM7MpiM4jIPz7xcrNlClQMafbyUDDWjlIQZ1Mw0Rw==}
+
+  elysia@1.1.4:
+    resolution: {integrity: sha512-1axwwKig+plmUH/Rwd+lvJvgutis+6eoF+RnB76fGtgNCfhQ8yh4pNb3MIo39YHwyEA+j6A5a/vn8U+UPkRt2A==}
+    peerDependencies:
+      '@sinclair/typebox': '>= 0.32.0'
+      openapi-types: '>= 12.0.0'
+      typescript: '>= 5.0.0'
+    peerDependenciesMeta:
+      openapi-types:
+        optional: true
+      typescript:
+        optional: true
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -2942,6 +2969,9 @@ packages:
   extend-shallow@3.0.2:
     resolution: {integrity: sha512-BwY5b5Ql4+qZoefgMj2NUmx+tehVTH/Kf4k1ZEtOHNFcm2wSxMRo992l6X3TIgni2eZVTZ85xMOjF31fwZAj6Q==}
     engines: {node: '>=0.10.0'}
+
+  fast-decode-uri-component@1.0.1:
+    resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -5699,6 +5729,10 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
+  '@elysiajs/eden@1.1.2(elysia@1.1.4(@sinclair/typebox@0.27.8)(typescript@5.5.3))':
+    dependencies:
+      elysia: 1.1.4(@sinclair/typebox@0.27.8)(typescript@5.5.3)
+
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -8206,6 +8240,8 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
+  cookie@0.6.0: {}
+
   core-js-compat@3.37.1:
     dependencies:
       browserslist: 4.23.2
@@ -8288,6 +8324,14 @@ snapshots:
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.4.829: {}
+
+  elysia@1.1.4(@sinclair/typebox@0.27.8)(typescript@5.5.3):
+    dependencies:
+      '@sinclair/typebox': 0.27.8
+      cookie: 0.6.0
+      fast-decode-uri-component: 1.0.1
+    optionalDependencies:
+      typescript: 5.5.3
 
   emoji-regex@8.0.0: {}
 
@@ -8448,6 +8492,8 @@ snapshots:
     dependencies:
       assign-symbols: 1.0.0
       is-extendable: 1.0.1
+
+  fast-decode-uri-component@1.0.1: {}
 
   fast-deep-equal@3.1.3: {}
 

@@ -57,20 +57,14 @@ function Sidebar() {
       style={{ minHeight }}
       className="absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800 opacity-90"
     >
-      {isOpen && !!state.selectedId && showContent ? (
-        <Content embedding={selectedEmbedding as Movie} />
+      {isOpen && !!state.selectedId && showContent && selectedEmbedding ? (
+        <Content embedding={selectedEmbedding} />
       ) : null}
     </animated.div>
   );
 }
 
-interface Movie extends Embedding {
-  imdbID: string;
-  Title: string;
-  Director: string;
-}
-
-function Content({ embedding }: { embedding: Movie }) {
+function Content({ embedding }: { embedding: Embedding }) {
   const { state, dispatch } = useAppContext();
 
   useEffect(() => {
@@ -91,7 +85,7 @@ function Content({ embedding }: { embedding: Movie }) {
       className="flex flex-col p-5 gap-1 text-sm select-none"
     >
       <Item
-        item={embedding.Title}
+        item={embedding.name}
         label={
           <div className="flex items-center gap-3">
             <div>Title</div>
@@ -101,7 +95,7 @@ function Content({ embedding }: { embedding: Movie }) {
           </div>
         }
       />
-      <Item item={embedding.Director} label="Director" />
+      <Item item={embedding.director} label="Director" />
       <div className="italic text-gray-400">Neighbors</div>
       {embedding
         .neighbors!.find((n) => n.distanceFn === state.distanceFn)
