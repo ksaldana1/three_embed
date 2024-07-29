@@ -44,6 +44,12 @@ export function World({ center }: { center: () => void }) {
 
   return (
     <group ref={worldRef}>
+      {state.search && (
+        <mesh position={state.search.map((x) => x * scale) as UMAP}>
+          <boxGeometry args={[100, 100, 5]} />
+          <meshBasicMaterial color="red" />
+        </mesh>
+      )}
       {embeddings.map((embedding) => {
         const fade = !!(
           state.selectedId &&
