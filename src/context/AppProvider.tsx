@@ -8,7 +8,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer<typeof appReducer>(appReducer, {
     selectedId: null,
     embeddings: [],
-    search: [-1.89443403410225, 1.3025660829957, 0.996972394419308],
+    search: null,
     distanceFn: "Cosine",
     model: "text-embedding-3-small",
     hovered: null,
