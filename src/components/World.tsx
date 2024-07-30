@@ -1,22 +1,20 @@
+import type {
+  Embedding,
+  EmbeddingModel,
+  UMAP,
+} from "@ksaldana1/embeddings_backend";
 import { Line, useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { button, useControls } from "leva";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Group, Vector3 } from "three";
-import {
-  Controls,
-  DistanceFn,
-  Embedding,
-  EmbeddingModel,
-  SCALING_FACTOR,
-  UMAP,
-} from "../common/types";
+import { Controls, SCALING_FACTOR } from "../common/types";
 import { useAppContext } from "../context/app";
 import { Embed } from "./Embedding";
 
 export function World({ center }: { center: () => void }) {
   const { state, dispatch } = useAppContext();
-  const { scale, distanceFn } = useDebugControls({ center });
+  const { scale } = useDebugControls({ center });
   useKeyboard();
 
   const embeddings = state.embeddings;
@@ -34,13 +32,12 @@ export function World({ center }: { center: () => void }) {
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
     const neighbors = selectedEmbedding?.neighbors
-      .find((n) => n.distanceFn === distanceFn)
-      ?.neighbors?.map((neighbor) =>
+      ?.map((neighbor) =>
         embeddings.find((embedding) => embedding.id === neighbor.id)
       )
       .map((embedding) => embedding?.umap.map((v) => v * scale) ?? []);
     return [currentPosition as UMAP, neighbors as Array<UMAP>];
-  }, [scale, embeddings, selectedEmbedding, distanceFn]);
+  }, [scale, embeddings, selectedEmbedding]);
 
   return (
     <group ref={worldRef}>
@@ -54,10 +51,7 @@ export function World({ center }: { center: () => void }) {
         const fade = !!(
           state.selectedId &&
           embedding.id !== state.selectedId &&
-          !selectedEmbedding?.neighbors
-            .find((n) => n.distanceFn === distanceFn)
-            ?.neighbors.map((n) => n.id)
-            .includes(embedding.id)
+          !selectedEmbedding?.neighbors.map((n) => n.id).includes(embedding.id)
         );
 
         return (
@@ -105,7 +99,6 @@ export function World({ center }: { center: () => void }) {
 
 function useDebugControls({ center }: { center: () => void }) {
   const { state, dispatch } = useAppContext();
-  // const bounds = useBounds();
   const controls = useControls({
     scale: {
       value: SCALING_FACTOR,
@@ -121,26 +114,8 @@ function useDebugControls({ center }: { center: () => void }) {
       ] as const satisfies EmbeddingModel[],
       value: state.model,
     },
-    distanceFn: {
-      options: [
-        "Cosine",
-        "L1",
-        "L2",
-        "Inner_Product",
-      ] as const satisfies DistanceFn[],
-      value: state.distanceFn,
-    },
     center: button(() => center()),
   });
-
-  // need to keep in sync with top level state
-  // kinda annoying but this debug menu is very useful
-  useEffect(() => {
-    dispatch({
-      type: "CHANGE_DISTANCE_FUNCTION",
-      payload: { distanceFn: controls.distanceFn },
-    });
-  }, [controls.distanceFn, dispatch]);
 
   useEffect(() => {
     dispatch({

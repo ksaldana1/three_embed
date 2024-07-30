@@ -10,8 +10,8 @@ import {
 import { useMemo, useState } from "react";
 import { World } from "./World";
 
-import { useAppContext } from "../context/app";
 import { Controls } from "../common/types";
+import { useAppContext } from "../context/app";
 
 export function Scene() {
   const { state } = useAppContext();

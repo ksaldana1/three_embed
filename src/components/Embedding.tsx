@@ -1,8 +1,9 @@
+import type { Embedding } from "@ksaldana1/embeddings_backend";
 import { animated, useSpring } from "@react-spring/three";
 import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
-import { Embedding, SCALING_FACTOR } from "../common/types";
+import { SCALING_FACTOR } from "../common/types";
 import { useAppContext } from "../context/app";
 
 interface EmbeddingProps {

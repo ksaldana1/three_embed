@@ -2,14 +2,13 @@ import { useEffect, useMemo, useReducer } from "react";
 import { fetchEmbeddings } from "../common/data";
 import { appReducer, Context } from "./app";
 import { useQuery } from "@tanstack/react-query";
-import { EmbeddingModel } from "../common/types";
+import type { EmbeddingModel } from "@ksaldana1/embeddings_backend";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer<typeof appReducer>(appReducer, {
     selectedId: null,
     embeddings: [],
     search: null,
-    distanceFn: "Cosine",
     model: "text-embedding-3-small",
     hovered: null,
   });

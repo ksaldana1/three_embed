@@ -3,12 +3,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { animated, config, useSpring } from "react-spring";
 import QueryClient from "./common/query";
-import { Embedding } from "./common/types";
 import { Scene } from "./components/Scene";
 import { Search } from "./components/Search";
 import { AppProvider } from "./context/AppProvider";
 import { useAppContext } from "./context/app";
 import { Stars } from "@react-three/drei";
+import type { Embedding } from "@ksaldana1/embeddings_backend";
 
 function App() {
   return (
@@ -74,7 +74,7 @@ function Content({ embedding }: { embedding: Embedding }) {
 
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
-  }, []);
+  }, [dispatch]);
 
   return (
     <ul
@@ -97,41 +97,39 @@ function Content({ embedding }: { embedding: Embedding }) {
       />
       <Item item={embedding.director} label="Director" />
       <div className="italic text-gray-400">Neighbors</div>
-      {embedding
-        .neighbors!.find((n) => n.distanceFn === state.distanceFn)
-        ?.neighbors.map((n) => (
-          <li
-            key={n.id}
-            className="flex justify-between"
-            onClick={() => {
+      {embedding.neighbors.map((n) => (
+        <li
+          key={n.id}
+          className="flex justify-between"
+          onClick={() => {
+            dispatch({
+              type: "USER_CLICK_EMBEDDING",
+              payload: {
+                embeddingId: n.id,
+              },
+            });
+          }}
+        >
+          <div
+            onPointerEnter={() => {
               dispatch({
-                type: "USER_CLICK_EMBEDDING",
-                payload: {
-                  embeddingId: n.id,
-                },
+                type: "NEIGHBOR_HOVER_EVENT",
+                payload: { embeddingId: n.id },
               });
             }}
+            onPointerLeave={() => {
+              dispatch({
+                type: "NEIGHBOR_HOVER_EVENT",
+                payload: { embeddingId: null },
+              });
+            }}
+            className="cursor-pointer underline text-gray-400"
           >
-            <div
-              onPointerEnter={() => {
-                dispatch({
-                  type: "NEIGHBOR_HOVER_EVENT",
-                  payload: { embeddingId: n.id },
-                });
-              }}
-              onPointerLeave={() => {
-                dispatch({
-                  type: "NEIGHBOR_HOVER_EVENT",
-                  payload: { embeddingId: null },
-                });
-              }}
-              className="cursor-pointer underline text-gray-400"
-            >
-              {state.embeddings.find((e) => e.id === n.id)?.name}
-            </div>
-            <div className="ms-4 text-gray-400">{n.distance.toFixed(4)}</div>
-          </li>
-        ))}
+            {state.embeddings.find((e) => e.id === n.id)?.name}
+          </div>
+          <div className="ms-4 text-gray-400">{n.distance.toFixed(4)}</div>
+        </li>
+      ))}
     </ul>
   );
 }

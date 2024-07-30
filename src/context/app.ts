@@ -1,12 +1,11 @@
 import { createContext, Reducer, useContext } from "react";
 import { match, P } from "ts-pattern";
-import { DistanceFn, Embedding, EmbeddingModel } from "../common/types";
+import type { Embedding, EmbeddingModel } from "@ksaldana1/embeddings_backend";
 
 export type AppState = {
   selectedId: Embedding["id"] | null;
   embeddings: Embedding[];
   search: [number, number, number] | null;
-  distanceFn: DistanceFn;
   model: EmbeddingModel;
   hovered: Embedding["id"] | null;
 };
@@ -18,7 +17,6 @@ export type AppEvents =
     }
   | { type: "EMBEDDINGS_RECEIVED"; payload: { embeddings: Embedding[] } }
   | { type: "SIDEBAR_CLOSED" }
-  | { type: "CHANGE_DISTANCE_FUNCTION"; payload: { distanceFn: DistanceFn } }
   | { type: "EMBEDDING_MODEL_CHANGED"; payload: { model: EmbeddingModel } }
   | { type: "NEIGHBOR_HOVER_EVENT"; payload: { embeddingId: string | null } };
 
@@ -48,12 +46,6 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
             ? null
             : event.payload.embeddingId,
       } as AppState;
-    })
-    .with([P.any, { type: "CHANGE_DISTANCE_FUNCTION" }], ([state, event]) => {
-      return {
-        ...state,
-        distanceFn: event.payload.distanceFn,
-      };
     })
     .with([P.any, { type: "EMBEDDINGS_RECEIVED" }], ([state, event]) => {
       return {

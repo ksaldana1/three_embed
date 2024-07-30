@@ -1,7 +1,9 @@
-import { Embedding, EmbeddingModel } from "./types";
-
 import { treaty } from "@elysiajs/eden";
-import type { Server } from "@ksaldana1/embeddings_backend";
+import type {
+  Server,
+  Embedding,
+  EmbeddingModel,
+} from "@ksaldana1/embeddings_backend";
 
 const client = treaty<Server>(import.meta.env.VITE_API_URL);
 

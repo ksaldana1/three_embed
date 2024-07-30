@@ -1,8 +1,8 @@
+import { Embedding } from "@ksaldana1/embeddings_backend";
 import clsx from "clsx";
 import Fuse, { FuseResult } from "fuse.js";
 import { useMemo, useState } from "react";
 import { Input, TextField } from "react-aria-components";
-import { Embedding } from "../common/types";
 import { useAppContext } from "../context/app";
 
 export function Search() {
