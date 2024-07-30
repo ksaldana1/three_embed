@@ -23,9 +23,6 @@ importers:
       '@react-three/fiber':
         specifier: ^8.16.8
         version: 8.16.8(react-dom@18.3.1(react@18.3.1))(react-native@0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(@types/react@18.3.3)(react@18.3.1))(react@18.3.1)(three@0.166.1)
-      '@supabase/supabase-js':
-        specifier: ^2.44.4
-        version: 2.44.4
       '@tanstack/react-query':
         specifier: ^5.51.11
         version: 5.51.11(react@18.3.1)
@@ -102,9 +99,6 @@ importers:
       postcss:
         specifier: ^8.4.39
         version: 8.4.39
-      supabase:
-        specifier: ^1.183.5
-        version: 1.183.5
       tailwindcss:
         specifier: ^3.4.6
         version: 3.4.6
