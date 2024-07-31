@@ -5,7 +5,7 @@ import type {
   EmbeddingModel,
 } from "@ksaldana1/embeddings_backend";
 
-const client = treaty<Server>(import.meta.env.VITE_API_URL);
+const client = treaty<ReturnType<Server>>(import.meta.env.VITE_API_URL);
 
 export const fetchEmbeddings: (
   model?: EmbeddingModel
