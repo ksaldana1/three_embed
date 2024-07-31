@@ -15,11 +15,3 @@ export const fetchEmbeddings: (
   });
   return data ?? ([] as Embedding[]);
 };
-
-export const fetchSearch = async (id: string) => {
-  const response = await fetch(
-    `${import.meta.env.VITE_UMAP_WORKER_URL}/movies/${id}`
-  );
-  const json = await response.json();
-  return json;
-};

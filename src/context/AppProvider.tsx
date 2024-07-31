@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useReducer } from "react";
-import { fetchEmbeddings, fetchSearch } from "../common/data";
-import { appReducer, Context } from "./app";
-import { useQuery } from "@tanstack/react-query";
 import type { EmbeddingModel } from "@ksaldana1/embeddings_backend";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useReducer } from "react";
+import { fetchEmbeddings } from "../common/data";
+import { appReducer, Context } from "./app";
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer<typeof appReducer>(appReducer, {
     selectedId: null,
     embeddings: [],
-    search: "tt6263850",
     model: "text-embedding-3-small",
     hovered: null,
   });
@@ -19,17 +18,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return fetchEmbeddings(queryKey.at(-1) as EmbeddingModel);
     },
   });
-
-  const { data: searchData } = useQuery({
-    queryKey: ["user_embeddings", state.search],
-    queryFn: ({ queryKey }) => fetchSearch(queryKey.at(-1) as string),
-  });
-
-  useEffect(() => {
-    if (data) {
-      dispatch({ type: "EMBEDDINGS_RECEIVED", payload: { embeddings: data } });
-    }
-  }, [data]);
 
   useEffect(() => {
     if (data) {

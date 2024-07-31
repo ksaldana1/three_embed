@@ -5,7 +5,6 @@ import type { Embedding, EmbeddingModel } from "@ksaldana1/embeddings_backend";
 export type AppState = {
   selectedId: Embedding["id"] | null;
   embeddings: Embedding[];
-  search: string | null;
   model: EmbeddingModel;
   hovered: Embedding["id"] | null;
 };
