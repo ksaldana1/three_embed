@@ -52,6 +52,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
       }}
       position={embeddingPosition}
       scale={localScale}
+      visible={!fade}
     >
       <animated.boxGeometry args={[100, 120, 1]} />
       <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />

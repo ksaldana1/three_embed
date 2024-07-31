@@ -45,7 +45,7 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
           state.selectedId === event.payload.embeddingId
             ? null
             : event.payload.embeddingId,
-      } as AppState;
+      };
     })
     .with([P.any, { type: "EMBEDDINGS_RECEIVED" }], ([state, event]) => {
       return {
