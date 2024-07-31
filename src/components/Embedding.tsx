@@ -35,6 +35,15 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     localScale: state.selectedId && !fade ? 2 : 1,
   });
 
+  const { opacity } = useSpring({
+    opacity:
+      fade || (!!state.hovered && state.hovered !== embedding.id)
+        ? embedding.id === state.selectedId
+          ? 0.3
+          : 0.02
+        : 1,
+  });
+
   return (
     <animated.mesh
       ref={ref}
@@ -47,7 +56,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
       visible={!fade}
     >
       <animated.boxGeometry args={[100, 120, 1]} />
-      <animated.meshBasicMaterial transparent map={texture} />
+      <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />
     </animated.mesh>
   );
 }
