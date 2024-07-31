@@ -41,6 +41,7 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
     .with([P.any, { type: "USER_CLICK_EMBEDDING" }], ([state, event]) => {
       return {
         ...state,
+        hovered: null,
         selectedId:
           state.selectedId === event.payload.embeddingId
             ? null
