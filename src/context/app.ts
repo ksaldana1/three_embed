@@ -5,7 +5,7 @@ import type { Embedding, EmbeddingModel } from "@ksaldana1/embeddings_backend";
 export type AppState = {
   selectedId: Embedding["id"] | null;
   embeddings: Embedding[];
-  search: [number, number, number] | null;
+  search: string | null;
   model: EmbeddingModel;
   hovered: Embedding["id"] | null;
 };
@@ -36,6 +36,7 @@ export const useAppContext = () => {
 };
 
 export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
+  console.log(event);
   return match([state, event])
     .returnType<AppState>()
     .with([P.any, { type: "USER_CLICK_EMBEDDING" }], ([state, event]) => {

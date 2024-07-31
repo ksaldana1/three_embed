@@ -28,14 +28,6 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     ] as const;
   }, [embedding.umap, scaleOrDefault]);
 
-  const { opacity } = useSpring({
-    opacity:
-      fade || (!!state.hovered && state.hovered !== embedding.id)
-        ? embedding.id === state.selectedId
-          ? 0.3
-          : 0.02
-        : 1,
-  });
   const { position: embeddingPosition } = useSpring({
     position,
   });
@@ -55,7 +47,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
       visible={!fade}
     >
       <animated.boxGeometry args={[100, 120, 1]} />
-      <animated.meshBasicMaterial transparent map={texture} opacity={opacity} />
+      <animated.meshBasicMaterial transparent map={texture} />
     </animated.mesh>
   );
 }
