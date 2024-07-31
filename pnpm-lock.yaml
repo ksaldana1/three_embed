@@ -12,8 +12,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(elysia@1.1.4(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3))
       '@ksaldana1/embeddings_backend':
-        specifier: ^0.0.5
-        version: 0.0.5(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3)
+        specifier: ^0.1.4
+        version: 0.1.4(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3)
       '@react-spring/three':
         specifier: ^9.7.3
         version: 9.7.3(@react-three/fiber@8.16.8(react-dom@18.3.1(react@18.3.1))(react-native@0.74.3(@babel/core@7.24.9)(@babel/preset-env@7.24.8(@babel/core@7.24.9))(@types/react@18.3.3)(react@18.3.1))(react@18.3.1)(three@0.166.1))(react@18.3.1)(three@0.166.1)
@@ -1133,8 +1133,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@ksaldana1/embeddings_backend@0.0.5':
-    resolution: {integrity: sha512-J2JrI9aK+YrsF9yn1Py3xHOZRg6zVVw1T8grmKz0hkH1Il/+txvvqKewEhWs8juOXSPdHsjvZSgASjZt7S2lYQ==}
+  '@ksaldana1/embeddings_backend@0.1.4':
+    resolution: {integrity: sha512-JxlsVioUE1Py6xMejNXHEF2Ry9Ajn7/uskEF3nL52RATfEg0cjOnNJ8nWm4hmFoelPw9TO3K4XPKw+0o0pBmOQ==}
 
   '@mediapipe/tasks-vision@0.10.8':
     resolution: {integrity: sha512-Rp7ll8BHrKB3wXaRFKhrltwZl1CiXGdibPxuWXvqGnKTnv8fqa/nvftYNuSbf+pbJWKYCXdBtYTITdAUTGGh0Q==}
@@ -6072,7 +6072,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@ksaldana1/embeddings_backend@0.0.5(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3)':
+  '@ksaldana1/embeddings_backend@0.1.4(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3)':
     dependencies:
       '@elysiajs/cors': 1.1.0(elysia@1.1.4(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3))
       '@elysiajs/eden': 1.1.2(elysia@1.1.4(@sinclair/typebox@0.27.8)(openapi-types@12.1.3)(typescript@5.5.3))

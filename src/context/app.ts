@@ -57,6 +57,7 @@ export const appReducer: Reducer<AppState, AppEvents> = (state, event) => {
       return {
         ...state,
         selectedId: null,
+        hovered: null,
       };
     })
     .with([P.any, { type: "EMBEDDING_MODEL_CHANGED" }], ([state, event]) => {
