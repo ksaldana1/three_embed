@@ -15,16 +15,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const { data } = useQuery({
     queryKey: ["embeddings", state.model],
-    queryFn: ({ queryKey }) =>
-      fetchEmbeddings(queryKey.at(-1) as EmbeddingModel),
+    queryFn: ({ queryKey }) => {
+      return fetchEmbeddings(queryKey.at(-1) as EmbeddingModel);
+    },
   });
 
   const { data: searchData } = useQuery({
     queryKey: ["user_embeddings", state.search],
     queryFn: ({ queryKey }) => fetchSearch(queryKey.at(-1) as string),
   });
-
-  console.log(searchData);
 
   useEffect(() => {
     if (data) {
