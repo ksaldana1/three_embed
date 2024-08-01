@@ -5,45 +5,42 @@ import { animated, config, useSpring } from "react-spring";
 import QueryClient from "./common/query";
 import { Scene } from "./components/Scene";
 import { Search } from "./components/Search";
-import { AppProvider } from "./context/AppProvider";
-import { useAppContext } from "./context/app";
 import { Stars } from "@react-three/drei";
+import store from "./context";
+import { useSelector } from "@xstate/store/react";
 import type { Embedding } from "@ksaldana1/embeddings_backend";
 
 function App() {
   return (
     <QueryClientProvider client={QueryClient}>
-      <AppProvider>
-        <Search />
-        <div className="flex h-full w-full overflow-hidden items-center">
-          <div className="flex w-full h-full">
-            <Canvas className="w-full h-full bg-black">
-              <Stars
-                radius={10000}
-                depth={50}
-                count={10000}
-                factor={1}
-                saturation={1}
-              />
-              <Scene />
-            </Canvas>
-          </div>
-          <Sidebar />
+      <Search />
+      <div className="flex h-full w-full overflow-hidden items-center">
+        <div className="flex w-full h-full">
+          <Canvas className="w-full h-full bg-black">
+            <Stars
+              radius={10000}
+              depth={50}
+              count={10000}
+              factor={1}
+              saturation={1}
+            />
+            <Scene />
+          </Canvas>
         </div>
-      </AppProvider>
+        <Sidebar />
+      </div>
     </QueryClientProvider>
   );
 }
 
 function Sidebar() {
-  const { state } = useAppContext();
+  const selectedId = useSelector(store, (state) => state.context.selectedId);
+  const embeddings = useSelector(store, (state) => state.context.embeddings);
   const [showContent, setShowContent] = useState(false);
 
-  const selectedEmbedding = state.embeddings.find(
-    (e) => e.id === state.selectedId
-  );
+  const selectedEmbedding = embeddings.find((e) => e.id === selectedId);
 
-  const isOpen = !!state.selectedId;
+  const isOpen = !!selectedId;
   const { minHeight } = useSpring({
     minHeight: isOpen ? "50%" : "0%",
     onRest: () => {
@@ -57,7 +54,7 @@ function Sidebar() {
       style={{ minHeight }}
       className="absolute w-96 left-12 rounded-lg shadow-lg select-none bg-gray-800 opacity-90"
     >
-      {isOpen && !!state.selectedId && showContent && selectedEmbedding ? (
+      {isOpen && !!selectedId && showContent && selectedEmbedding ? (
         <Content embedding={selectedEmbedding} />
       ) : null}
     </animated.div>
@@ -65,16 +62,16 @@ function Sidebar() {
 }
 
 function Content({ embedding }: { embedding: Embedding }) {
-  const { state, dispatch } = useAppContext();
+  const embeddings = useSelector(store, (state) => state.context.embeddings);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
-      if (event.code === "Escape") dispatch({ type: "SIDEBAR_CLOSED" });
+      if (event.code === "Escape") store.send({ type: "SIDEBAR_CLOSED" });
     };
 
     document.addEventListener("keydown", listener);
     return () => document.removeEventListener("keydown", listener);
-  }, [dispatch]);
+  }, []);
 
   return (
     <ul
@@ -102,7 +99,7 @@ function Content({ embedding }: { embedding: Embedding }) {
           key={n.id}
           className="flex justify-between"
           onClick={() => {
-            dispatch({
+            store.send({
               type: "USER_CLICK_EMBEDDING",
               payload: {
                 embeddingId: n.id,
@@ -112,20 +109,20 @@ function Content({ embedding }: { embedding: Embedding }) {
         >
           <div
             onPointerEnter={() => {
-              dispatch({
+              store.send({
                 type: "NEIGHBOR_HOVER_EVENT",
                 payload: { embeddingId: n.id },
               });
             }}
             onPointerLeave={() => {
-              dispatch({
+              store.send({
                 type: "NEIGHBOR_HOVER_EVENT",
                 payload: { embeddingId: null },
               });
             }}
             className="cursor-pointer underline text-gray-400"
           >
-            {state.embeddings.find((e) => e.id === n.id)?.name}
+            {embeddings.find((e) => e.id === n.id)?.name}
           </div>
           <div className="ms-4 text-gray-400">{n.distance.toFixed(4)}</div>
         </li>

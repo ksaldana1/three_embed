@@ -4,7 +4,8 @@ import { useTexture } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
 import { SCALING_FACTOR } from "../common/types";
-import { useAppContext } from "../context/app";
+import { useSelector } from "@xstate/store/react";
+import store from "../context";
 
 interface EmbeddingProps {
   embedding: Embedding;
@@ -17,7 +18,8 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
   const texture = useTexture(embedding.image_url);
   const ref = useRef<Mesh>(null!);
   const scaleOrDefault = scale ?? SCALING_FACTOR;
-  const { state } = useAppContext();
+  const selectedId = useSelector(store, (store) => store.context.selectedId);
+  const hovered = useSelector(store, (store) => store.context.hovered);
 
   const position = useMemo(() => {
     const [x, y, z] = embedding.umap;
@@ -32,13 +34,13 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     position,
   });
   const { localScale } = useSpring({
-    localScale: state.selectedId && !fade ? 2 : 1,
+    localScale: selectedId && !fade ? 2 : 1,
   });
 
   const { opacity } = useSpring({
     opacity:
-      fade || (!!state.hovered && state.hovered !== embedding.id)
-        ? embedding.id === state.selectedId
+      fade || (!!hovered && hovered !== embedding.id)
+        ? embedding.id === selectedId
           ? 0.3
           : 0.02
         : 1,

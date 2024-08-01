@@ -11,10 +11,11 @@ import { useMemo, useState } from "react";
 import { World } from "./World";
 
 import { Controls } from "../common/types";
-import { useAppContext } from "../context/app";
+import { useSelector } from "@xstate/store/react";
+import store from "../context";
 
 export function Scene() {
-  const { state } = useAppContext();
+  const embeddings = useSelector(store, (store) => store.context.embeddings);
   // random seed for center functionality
   const [seed, setSeed] = useState(Math.random());
   const map = useMemo<KeyboardControlsEntry<Controls>[]>(
@@ -28,7 +29,7 @@ export function Scene() {
     []
   );
 
-  if (!state.embeddings?.length) {
+  if (!embeddings?.length) {
     return null;
   }
 

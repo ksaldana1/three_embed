@@ -9,25 +9,26 @@ import { button, useControls } from "leva";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Group, Vector3 } from "three";
 import { Controls, SCALING_FACTOR } from "../common/types";
-import { useAppContext } from "../context/app";
+import store from "../context";
+import { useSelector } from "@xstate/store/react";
 import { Embed } from "./Embedding";
 
 export function World({ center }: { center: () => void }) {
-  const { state, dispatch } = useAppContext();
+  const embeddings = useSelector(store, (store) => store.context.embeddings);
+  const selectedId = useSelector(store, (store) => store.context.selectedId);
+  const hovered = useSelector(store, (store) => store.context.hovered);
   const { scale } = useDebugControls({ center });
   useKeyboard();
-
-  const embeddings = state.embeddings;
 
   const worldRef = useRef<Group>(null!);
 
   const selectedEmbedding = useMemo(() => {
-    return state.embeddings.find((e) => e.id === state?.selectedId);
-  }, [state.embeddings, state.selectedId]);
+    return embeddings.find((e) => e.id === selectedId);
+  }, [embeddings, selectedId]);
 
   const hoveredEmbedding = useMemo(() => {
-    return state.embeddings.find((e) => e.id === state?.hovered);
-  }, [state.embeddings, state.hovered]);
+    return embeddings.find((e) => e.id === hovered);
+  }, [embeddings, hovered]);
 
   const [currentPosition, neighborPositions] = useMemo(() => {
     const currentPosition = selectedEmbedding?.umap.map((x) => x * scale) ?? [];
@@ -41,10 +42,14 @@ export function World({ center }: { center: () => void }) {
 
   return (
     <group ref={worldRef}>
+      <mesh position={[-1.1288210332658, -4.25531343265652, -2.49038089298619]}>
+        <boxGeometry args={[100, 100, 1]} />
+        <meshBasicMaterial color="red" />
+      </mesh>
       {embeddings.map((embedding) => {
         const fade = !!(
-          state.selectedId &&
-          embedding.id !== state.selectedId &&
+          selectedId &&
+          embedding.id !== selectedId &&
           !selectedEmbedding?.neighbors.map((n) => n.id).includes(embedding.id)
         );
 
@@ -52,7 +57,7 @@ export function World({ center }: { center: () => void }) {
           <Embed
             embedding={embedding}
             onClick={(embedding: Embedding | null) => {
-              dispatch({
+              store.send({
                 type: "USER_CLICK_EMBEDDING",
                 payload: {
                   embeddingId: embedding?.id ?? null,
@@ -67,7 +72,7 @@ export function World({ center }: { center: () => void }) {
       })}
       {hoveredEmbedding && (
         <Line
-          key={`${state.selectedId}-hovered`}
+          key={`${selectedId}-hovered`}
           points={[
             currentPosition,
             hoveredEmbedding.umap.map((x) => x * scale) as UMAP,
@@ -80,7 +85,7 @@ export function World({ center }: { center: () => void }) {
         neighborPositions?.map((neighborPosition, index) => {
           return (
             <Line
-              key={`${state.selectedId}-${index}`}
+              key={`${selectedId}-${index}`}
               points={[currentPosition, neighborPosition]}
               color="white"
               lineWidth={2}
@@ -92,7 +97,7 @@ export function World({ center }: { center: () => void }) {
 }
 
 function useDebugControls({ center }: { center: () => void }) {
-  const { state, dispatch } = useAppContext();
+  const model = useSelector(store, (store) => store.context.model);
   const controls = useControls({
     scale: {
       value: SCALING_FACTOR,
@@ -106,17 +111,17 @@ function useDebugControls({ center }: { center: () => void }) {
         "nomic-embed-text-v1.5",
         "mxbai-embed-large",
       ] as const satisfies EmbeddingModel[],
-      value: state.model,
+      value: model,
     },
     center: button(() => center()),
   });
 
   useEffect(() => {
-    dispatch({
+    store.send({
       type: "EMBEDDING_MODEL_CHANGED",
       payload: { model: controls.model },
     });
-  }, [controls.model, dispatch]);
+  }, [controls.model]);
 
   return controls;
 }

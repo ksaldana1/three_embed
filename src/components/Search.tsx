@@ -3,7 +3,8 @@ import clsx from "clsx";
 import Fuse, { FuseResult } from "fuse.js";
 import { useMemo, useState } from "react";
 import { Input, TextField } from "react-aria-components";
-import { useAppContext } from "../context/app";
+import store from "../context";
+import { useSelector } from "@xstate/store/react";
 
 export function Search() {
   const [search, setSearch] = useState<string | null>(null);
@@ -59,12 +60,11 @@ function Result({
   result: FuseResult<Embedding>;
   setSearch: () => void;
 }) {
-  const { dispatch } = useAppContext();
   return (
     <div
       className="hover:bg-gray-400 hover:text-white rounded-lg pl-2"
       onClick={() => {
-        dispatch({
+        store.send({
           type: "USER_CLICK_EMBEDDING",
           payload: { embeddingId: result.item.id },
         });
@@ -77,15 +77,15 @@ function Result({
 }
 
 function useFuse(search: string | null) {
-  const { state } = useAppContext();
+  const embeddings = useSelector(store, (store) => store.context.embeddings);
   const fuse = useMemo(() => {
-    return new Fuse(state.embeddings, {
+    return new Fuse(embeddings, {
       keys: ["name", "id"],
       includeScore: true,
       threshold: 0.2,
       ignoreLocation: true,
     });
-  }, [state.embeddings]);
+  }, [embeddings]);
   if (!search) {
     return [];
   }
