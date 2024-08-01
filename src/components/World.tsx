@@ -42,10 +42,6 @@ export function World({ center }: { center: () => void }) {
 
   return (
     <group ref={worldRef}>
-      <mesh position={[-1.1288210332658, -4.25531343265652, -2.49038089298619]}>
-        <boxGeometry args={[100, 100, 1]} />
-        <meshBasicMaterial color="red" />
-      </mesh>
       {embeddings.map((embedding) => {
         const fade = !!(
           selectedId &&
