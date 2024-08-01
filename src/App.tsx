@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { animated, config, useSpring } from "react-spring";
 import QueryClient from "./common/query";
@@ -8,29 +8,53 @@ import { Search } from "./components/Search";
 import { Stars } from "@react-three/drei";
 import store from "./context";
 import { useSelector } from "@xstate/store/react";
-import type { Embedding } from "@ksaldana1/embeddings_backend";
+import type { Embedding, EmbeddingModel } from "@ksaldana1/embeddings_backend";
+import { fetchEmbeddings } from "./common/data";
 
 function App() {
   return (
     <QueryClientProvider client={QueryClient}>
-      <Search />
-      <div className="flex h-full w-full overflow-hidden items-center">
-        <div className="flex w-full h-full">
-          <Canvas className="w-full h-full bg-black">
-            <Stars
-              radius={10000}
-              depth={50}
-              count={10000}
-              factor={1}
-              saturation={1}
-            />
-            <Scene />
-          </Canvas>
+      <EmbeddingProvider>
+        <Search />
+        <div className="flex h-full w-full overflow-hidden items-center">
+          <div className="flex w-full h-full">
+            <Canvas className="w-full h-full bg-black">
+              <Stars
+                radius={10000}
+                depth={50}
+                count={10000}
+                factor={1}
+                saturation={1}
+              />
+              <Scene />
+            </Canvas>
+          </div>
+          <Sidebar />
         </div>
-        <Sidebar />
-      </div>
+      </EmbeddingProvider>
     </QueryClientProvider>
   );
+}
+
+function EmbeddingProvider({ children }: { children: React.ReactNode }) {
+  const model = useSelector(store, (store) => store.context.model);
+  const { data } = useQuery({
+    queryKey: ["embeddings", model],
+    queryFn: ({ queryKey }) => {
+      return fetchEmbeddings(queryKey.at(-1) as EmbeddingModel);
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      store.send({
+        type: "EMBEDDINGS_RECEIVED",
+        payload: { embeddings: data },
+      });
+    }
+  }, [data]);
+
+  return <>{children}</>;
 }
 
 function Sidebar() {
