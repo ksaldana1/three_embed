@@ -50,6 +50,7 @@ export function Embed({ embedding, onClick, scale, fade }: EmbeddingProps) {
     <animated.mesh
       ref={ref}
       onDoubleClick={(e) => {
+        if (selectedId) return;
         e.stopPropagation();
         onClick(embedding);
       }}
