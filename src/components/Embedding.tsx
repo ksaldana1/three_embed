@@ -1,12 +1,11 @@
 import type { Embedding } from "@ksaldana1/embeddings_backend";
 import { animated, useSpring } from "@react-spring/three";
 import { useTexture } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { useSelector } from "@xstate/store/react";
+import { useMemo, useRef } from "react";
 import type { Mesh } from "three";
 import { SCALING_FACTOR } from "../common/types";
-import { useSelector } from "@xstate/store/react";
 import store from "../context";
-import { ErrorBoundary } from "react-error-boundary";
 
 interface EmbeddingProps {
   embedding: Embedding;
