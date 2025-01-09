@@ -12,6 +12,7 @@ import { Controls, SCALING_FACTOR } from "../common/types";
 import store from "../context";
 import { useSelector } from "@xstate/store/react";
 import { Embed } from "./Embedding";
+import { ErrorBoundary } from "react-error-boundary";
 
 export function World({ center }: { center: () => void }) {
   const embeddings = useSelector(store, (store) => store.context.embeddings);
@@ -50,20 +51,22 @@ export function World({ center }: { center: () => void }) {
         );
 
         return (
-          <Embed
-            embedding={embedding}
-            onClick={(embedding: Embedding | null) => {
-              store.send({
-                type: "USER_CLICK_EMBEDDING",
-                payload: {
-                  embeddingId: embedding?.id ?? null,
-                },
-              });
-            }}
-            key={embedding.id}
-            scale={scale}
-            fade={fade}
-          />
+          <ErrorBoundary fallback={null}>
+            <Embed
+              embedding={embedding}
+              onClick={(embedding: Embedding | null) => {
+                store.send({
+                  type: "USER_CLICK_EMBEDDING",
+                  payload: {
+                    embeddingId: embedding?.id ?? null,
+                  },
+                });
+              }}
+              key={embedding.id}
+              scale={scale}
+              fade={fade}
+            />
+          </ErrorBoundary>
         );
       })}
       {hoveredEmbedding && (
